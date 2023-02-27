@@ -1,5 +1,6 @@
 import 'dart:io';
 
+// import 'package:ditredi/ditredi.dart';
 import 'package:ditredi/ditredi.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String strNone = "NONE";
   List<String> listPcdFiles = [];
+
+  bool checkedListUpdated = false;
 
   _visualizer(
     BuildContext context, {
@@ -84,71 +87,165 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text("Point Cloud Data File Visualizer"),
       ),
-      body: Scrollbar(
-        thickness: 10,
-        radius: const Radius.circular(20),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  TextButton(
-                    onPressed: () async {
-                      if (listPcdFiles.isNotEmpty) listPcdFiles.clear();
-                      String? selectedDirectory =
-                          await FilePicker.platform.getDirectoryPath();
-                      if (selectedDirectory == null) {
-                        // User canceled the picker
-                      } else {
-                        Directory dir = Directory(selectedDirectory);
-                        List listFiles = dir.listSync();
-                        setState(
-                          () {
-                            for (var i in listFiles) {
-                              String sub = i
-                                  .toString()
-                                  .substring(7, i.toString().length - 1);
-                              List sp = sub.split('.');
-                              if (sp.length > 1) {
-                                if (sp[sp.length - 1] == 'pcd') {
-                                  print('Find : $sub');
-                                  listPcdFiles.add(sub);
-                                }
-                              }
+      body: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                bottom: 8,
+                top: 8,
+                right: 15,
+                left: 15,
+              ),
+              child: ElevatedButton(
+                onPressed: () async {
+                  if (listPcdFiles.isNotEmpty) listPcdFiles.clear();
+                  String? selectedDirectory =
+                      await FilePicker.platform.getDirectoryPath();
+                  if (selectedDirectory == null) {
+                    // User canceled the picker
+                  } else {
+                    Directory dir = Directory(selectedDirectory);
+                    List listFiles = dir.listSync();
+                    setState(
+                      () {
+                        for (var i in listFiles) {
+                          String sub = i
+                              .toString()
+                              .substring(7, i.toString().length - 1);
+                          List sp = sub.split('.');
+                          if (sp.length > 1) {
+                            if (sp[sp.length - 1] == 'pcd') {
+                              // print('Find : $sub');
+                              listPcdFiles.add(sub);
                             }
-                            selPcdFile = listPcdFiles[0];
-                          },
+                          }
+                        }
+                        selPcdFile = listPcdFiles[0];
+                      },
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xff4399F8),
+                  foregroundColor: Colors.white,
+                  elevation: 10,
+                  shadowColor: Colors.black,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: 8,
+                    top: 8,
+                    right: 15,
+                    left: 15,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(
+                        Icons.folder_open_rounded,
+                        size: 30,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        "PCD files Directory select",
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                          // backgroundColor: Colors.blue,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                bottom: 8,
+                top: 8,
+                right: 15,
+                left: 15,
+              ),
+              child: DropdownButton(
+                isExpanded: true,
+                items: generateFileListMenu(listPcdFiles),
+                // icon: Ic,
+                onChanged: (dynamic value) {
+                  setState(
+                    () {
+                      selPcdFile = value;
+                      if (selPcdFile != strNone) {
+                        checkedListUpdated = true;
+                      } else {
+                        checkedListUpdated = false;
+                      }
+                      // print(listPcdFiles);
+                    },
+                  );
+                },
+                value: selPcdFile,
+              ),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                bottom: 8,
+                top: 8,
+                right: 15,
+                left: 15,
+              ),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xff4399F8),
+                  foregroundColor: Colors.white,
+                  elevation: 10,
+                  shadowColor: Colors.black,
+                ),
+                onPressed: checkedListUpdated
+                    ? () async {
+                        _visualizer(
+                          context,
+                          pointCloud: await pcdReader.read(selPcdFile),
                         );
                       }
-                    },
-                    child: const Text("PCD files Directory select"),
+                    : null,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(Icons.file_open_outlined),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        'Load',
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                          // backgroundColor: Colors.blue,
+                        ),
+                      ),
+                    ],
                   ),
-                  DropdownButton(
-                    items: generateFileListMenu(listPcdFiles),
-                    onChanged: (dynamic value) {
-                      setState(
-                        () {
-                          selPcdFile = value;
-                          // print(listPcdFiles);
-                        },
-                      );
-                    },
-                    value: selPcdFile,
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      // print("button pressed : $selPcdFile");
-                      // pointCloud = await pcdReader.read(selPcdFile);
-                      _visualizer(context,
-                          pointCloud: await pcdReader.read(selPcdFile));
-                    },
-                    child: const Text('Load'),
-                  ),
-                ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
