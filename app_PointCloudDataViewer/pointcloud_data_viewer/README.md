@@ -21,13 +21,12 @@ A new Flutter project for Point Cloud Data Visualizer.
 
 ## home
 
-![home](./image/1.%20home_screen.png)
+<img src="./image/1.%20home_screen.png" width="50%" heigth="50%">
 
 ## file select
 
-![select file](./image/2.%20select_file.png)
+<img src="./image/2.%20select_file.png" width="50%" heigth="50%">
 
 ## visualization
 
-![view 1](./image/3.%20visualize_1.png)
-![view 2](./image/3.%20visualize_2.png)
+<img src="./image/3.%20visualize_1.png" width="50%" heigth="50%"><img src="./image/3.%20visualize_2.png" width="50%" heigth="50%">
