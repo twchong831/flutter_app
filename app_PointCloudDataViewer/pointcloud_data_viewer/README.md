@@ -17,6 +17,8 @@ A new Flutter project for Point Cloud Data Visualizer.
 
 ## result
 
+- in Mac OS
+
 ## home
 
 ![home](./image/1.%20home_screen.png)
