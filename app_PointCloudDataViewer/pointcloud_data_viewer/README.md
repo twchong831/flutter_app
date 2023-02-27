@@ -14,3 +14,18 @@ A new Flutter project for Point Cloud Data Visualizer.
 2. [file_picker](https://pub.dev/packages/file_picker)
 3. [path_provider](https://pub.dev/packages/path_provider)
 4. [cross_scroll](https://pub.dev/packages/cross_scroll)
+
+## result
+
+## home
+
+![home](./image/1.%20home_screen.png)
+
+## file select
+
+![select file](./image/2.%20select_file.png)
+
+## visualization
+
+![view 1](./image/3.%20visualize_1.png)
+![view 2](./image/3.%20visualize_2.png)
