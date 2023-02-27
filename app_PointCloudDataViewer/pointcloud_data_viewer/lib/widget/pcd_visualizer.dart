@@ -23,6 +23,14 @@ class _PcdVisualizerState extends State<PcdVisualizer> {
     minUserScale: 0.05,
   );
 
+  // late Model3D<Model3D<dynamic>> pointcloudModel;
+
+  @override
+  void initState() {
+    super.initState();
+    // pointcloudModel = widget.outputPointCloud;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +38,7 @@ class _PcdVisualizerState extends State<PcdVisualizer> {
         title: const Text("Point Cloud Data Visualization"),
       ),
       body: Container(
-        color: const Color.fromARGB(255, 2, 2, 80),
+        color: const Color.fromARGB(255, 2, 2, 80), //set background
         child: SafeArea(
           child: Flex(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,7 +48,8 @@ class _PcdVisualizerState extends State<PcdVisualizer> {
                 child: DiTreDiDraggable(
                   controller: _controller,
                   child: DiTreDi(
-                    figures: widget.outputPointCloud,
+                    figures: (widget.outputPointCloud),
+                    //output list<point3d>
                     controller: _controller,
                     config: const DiTreDiConfig(
                       defaultPointWidth: 3,
