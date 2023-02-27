@@ -17,6 +17,8 @@ class FileSystem {
     filename = name;
   }
 
+  void setPathName(String pathName) {}
+
   File get filePath {
     return File('$bPath/$filename');
   }
@@ -28,30 +30,6 @@ class FileSystem {
     return file.writeAsString('$value');
   }
 
-  // void readLoop() async {
-  //   final File file;
-  //   if (bPath.isNotEmpty) {
-  //     file = File('$bPath/$filename');
-  //   } else {
-  //     file = await _localFile;
-  //   }
-  //   // contents = file.openRead();
-  //   if (await file.exists()) {
-  //     Stream<String> lines = file
-  //         .openRead()
-  //         .transform(utf8.decoder)
-  //         .transform(const LineSplitter());
-
-  //     try {
-  //       await for (var line in lines) {
-  //         print("$line: ${line.length}");
-  //       }
-  //     } catch (e) {
-  //       print('Error : $e');
-  //     }
-  //   }
-  // }
-
   // read file
   Future<Stream<String>> read() async {
     Stream<String> contents;
@@ -61,18 +39,13 @@ class FileSystem {
     } else {
       file = filePath;
     }
-    // contents = file.openRead();
     if (await file.exists()) {
       try {
-        // await for (var line in lines) {
-        //   print("$line: ${line.length}");
-        // }
         contents = file
             .openRead()
             .transform(utf8.decoder)
             .transform(const LineSplitter());
-
-        file.deleteSync(); //delete
+        // file.deleteSync(); //delete file
         return contents; //return
       } catch (e) {
         print('Error : $e');

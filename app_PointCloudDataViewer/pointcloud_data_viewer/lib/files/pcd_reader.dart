@@ -31,7 +31,7 @@ class PCDReader {
   late String path;
 
   final String _dumPath =
-      '/Users/twchong/workspace/myGithub/basic_study/flutter/03_flutter/SRC/app_flutter_3D/app_thirddemension/pcd';
+      '/Users/twchong/workspace/myGithub/flutter_app/app_PointCloudDataViewer/pointcloud_data_viewer/pcd';
   FileSystem mFiles = FileSystem();
 
   PCDReader({
@@ -149,20 +149,36 @@ class PCDReader {
   }
 
   // read file & convert Stream<string> to List<String>
-  Future<List<String>> _readFromFile() async {
-    setBasePath();
-
-    mFiles.setLocalPath(path);
-    mFiles.setFileName('pointcloud_log.pcd');
-
+  Future<List<String>> _readFromFile({
+    String file = '',
+  }) async {
+    mFiles.setFileName(file);
     Stream<String> fileLines = mFiles.readSync();
-
     return fileLines.toList();
   }
 
   Future<List<Point3D>> read(String filename) async {
     List<Point3D> pc = [];
-    final strs = await _readFromFile();
+
+    List<String> strs = [];
+
+    // path parse
+    List sp1 = filename.split('/');
+    if (sp1.length > 1) // path + file name
+    {
+      String path = '';
+      for (int i = 0; i < sp1.length - 1; i++) {
+        path += sp1[i] + '/';
+      }
+      mFiles.setLocalPath(path.substring(0, path.length - 1));
+      strs = await _readFromFile(file: sp1[sp1.length - 1]);
+      // print(filename);
+    } else {
+      setBasePath();
+      strs = await _readFromFile(
+        file: filename,
+      );
+    }
 
     if (strs.isNotEmpty) {
       // check point type
