@@ -13,19 +13,24 @@ import 'package:flutter/src/material/colors.dart' as colorcode;
 
 class PcdVisualizer extends StatefulWidget {
   List<Point3D> outputPointCloud = [];
+  final bool updated;
   PcdVisualizer({
     super.key,
     required this.outputPointCloud,
+    required this.updated,
   });
 
-  void pointCloudUpdate(List<Point3D> pc) {
-    outputPointCloud = pc;
-  }
+  // void pointCloudUpdate(List<Point3D> pc) {
+  //   outputPointCloud = pc;
+  // }
 
   @override
   State<PcdVisualizer> createState() => _PcdVisualizerState();
 
-  void updated(List<Point3D> pointCloud) {}
+  void updatedPointCloud(List<Point3D> pointCloud) {
+    outputPointCloud = pointCloud;
+    print('call pcd_visual updated');
+  }
 }
 
 class _PcdVisualizerState extends State<PcdVisualizer> {
@@ -46,12 +51,18 @@ class _PcdVisualizerState extends State<PcdVisualizer> {
     // pointcloudModel = widget.outputPointCloud;
   }
 
-  void updated(List<Point3D> pc) {
-    setState(() {
-      print("update cloud : ${pc.length}");
-      widget.outputPointCloud = pc;
-      checkedUpdate = true;
-    });
+  // void updatedPointCloud(List<Point3D> pc) {
+  //   print('call pcd_visual updatedPointCloud');
+  //   setState(() {
+  //     print("update cloud : ${pc.length}");
+  //     widget.outputPointCloud = pc;
+  //     checkedUpdate = true;
+  //   });
+  // }
+
+  bool _checkUpdate() {
+    setState(() {});
+    return widget.updated;
   }
 
   @override
@@ -74,12 +85,19 @@ class _PcdVisualizerState extends State<PcdVisualizer> {
                     // figures: (widget.outputPointCloud),
                     // output list<point3d>
                     figures: [
-                      PointCloud3D(
-                        widget.outputPointCloud,
-                        Vector3(0, 0, 0),
-                        pointWidth: 4,
-                        // color: colorcode.Colors.amber,
-                      ),
+                      _checkUpdate()
+                          ? PointCloud3D(
+                              widget.outputPointCloud,
+                              Vector3(0, 0, 0),
+                              pointWidth: 4,
+                              // color: colorcode.Colors.amber,
+                            )
+                          : PointCloud3D(
+                              widget.outputPointCloud,
+                              Vector3(0, 0, 0),
+                              pointWidth: 4,
+                              // color: colorcode.Colors.amber,
+                            ),
                       Grid3D(const Point(10, 15), const Point(-10, 0), 1,
                           lineWidth: 1,
                           color: colorcode.Colors.white.withOpacity(0.6)),

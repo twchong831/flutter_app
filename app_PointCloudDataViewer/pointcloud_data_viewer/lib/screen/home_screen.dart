@@ -31,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late Timer timerPlay;
   bool checkedTimerIsRunning = false;
   int timerListCount = 0;
+  bool checkedTimerViewerUpdated = false;
 
   late PcdVisualizer mVisualizer;
 
@@ -47,8 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
           // builder: (context) => PcdVisualizer(
           //   outputPointCloud: pointCloud,
           // ),
-          builder: (context) =>
-              mVisualizer = PcdVisualizer(outputPointCloud: pointCloud),
+          builder: (context) => mVisualizer = PcdVisualizer(
+              outputPointCloud: pointCloud, updated: checkedTimerViewerUpdated),
         ),
       );
       checkedVisualization = true;
@@ -58,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // print('$checkedVisualization , $checkedTimerIsRunning');
       if (checkedVisualization) {
         if (checkedTimerIsRunning) {
-          // print("timer cancle");
+          print("timer cancle");
           checkedTimerIsRunning = false;
           timerPlay.cancel();
         }
@@ -115,8 +116,9 @@ class _HomeScreenState extends State<HomeScreen> {
         // mVisualizer.updated(pointCloud);
       }
       print("timer point cloud size ${pointCloud.length}");
-      mVisualizer.updated(pointCloud);
+      mVisualizer.updatedPointCloud(pointCloud);
       print('timer update 1s : $timerListCount');
+      checkedTimerViewerUpdated = !checkedTimerViewerUpdated;
     });
   }
 
@@ -164,6 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: ElevatedButton(
                 onPressed: () async {
+                  timerListCount = 0;
                   if (listPcdFiles.isNotEmpty) listPcdFiles.clear();
                   String? selectedDirectory =
                       await FilePicker.platform.getDirectoryPath();
@@ -181,23 +184,29 @@ class _HomeScreenState extends State<HomeScreen> {
                           List sp = sub.split('.');
                           if (sp.length > 1) {
                             if (sp[sp.length - 1] == 'pcd') {
-                              // print('Find : $sub');
                               listPcdFiles.add(sub);
                             }
                           }
                         }
-                        listPcdFiles.sort(
-                          (a, b) {
-                            List<String> la = a.split(RegExp(r'[(-)]'));
-                            List<String> lb = b.split(RegExp(r'[(-)]'));
 
-                            if (int.parse(la[1]) > int.parse(lb[1])) {
-                              return 1;
-                            } else {
-                              return -1;
-                            }
-                          },
-                        );
+                        if (listPcdFiles.length > 1) {
+                          checkedListUpdated = true;
+                          listPcdFiles.sort(
+                            (a, b) {
+                              List<String> la = a.split(RegExp(r'[(-)]'));
+                              List<String> lb = b.split(RegExp(r'[(-)]'));
+
+                              if (int.parse(la[1]) > int.parse(lb[1])) {
+                                return 1;
+                              } else {
+                                return -1;
+                              }
+                            },
+                          );
+                        } else {
+                          checkedListUpdated = false;
+                          listPcdFiles.add(strNone);
+                        }
                         selPcdFile = listPcdFiles[0];
                       },
                     );
@@ -261,6 +270,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     () {
                       selPcdFile = value;
                       if (selPcdFile != strNone) {
+                        print("list sel update");
                         checkedListUpdated = true;
                       } else {
                         checkedListUpdated = false;
