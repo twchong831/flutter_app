@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 // import 'package:ditredi/ditredi.dart';
@@ -24,22 +25,46 @@ class _HomeScreenState extends State<HomeScreen> {
   String strNone = "NONE";
   List<String> listPcdFiles = [];
 
+  bool checkedVisualization = false;
   bool checkedListUpdated = false;
+
+  late Timer timerPlay;
+  bool checkedTimerIsRunning = false;
+  int timerListCount = 0;
+
+  late PcdVisualizer mVisualizer;
 
   _visualizer(
     BuildContext context, {
     required pointCloud,
   }) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PcdVisualizer(
-          outputPointCloud: pointCloud,
+    print('checkedVisualization $checkedVisualization');
+    print('checkedTimerIsRunning $checkedTimerIsRunning');
+    if (!checkedVisualization) {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          // builder: (context) => PcdVisualizer(
+          //   outputPointCloud: pointCloud,
+          // ),
+          builder: (context) =>
+              mVisualizer = PcdVisualizer(outputPointCloud: pointCloud),
         ),
-      ),
-    );
+      );
+      checkedVisualization = true;
+    }
 
-    setState(() {});
+    setState(() {
+      // print('$checkedVisualization , $checkedTimerIsRunning');
+      if (checkedVisualization) {
+        if (checkedTimerIsRunning) {
+          // print("timer cancle");
+          checkedTimerIsRunning = false;
+          timerPlay.cancel();
+        }
+        checkedVisualization = false;
+      }
+    });
   }
 
   // generate dropdownMenuItem
@@ -78,6 +103,42 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     return l;
+  }
+
+  void onUpdateListNum(Timer timer) async {
+    pointCloud = await pcdReader.read(listPcdFiles[timerListCount]);
+    setState(() {
+      timerListCount++;
+      if (timerListCount > listPcdFiles.length) {
+        timerListCount = 0;
+
+        // mVisualizer.updated(pointCloud);
+      }
+      print("timer point cloud size ${pointCloud.length}");
+      mVisualizer.updated(pointCloud);
+      print('timer update 1s : $timerListCount');
+    });
+  }
+
+  //timer playing
+  void timerPlaying() {
+    if (!checkedTimerIsRunning) {
+      timerPlay = Timer.periodic(
+        // const Duration(microseconds: 30),
+        const Duration(seconds: 1),
+        (timer) => onUpdateListNum(timer),
+      );
+    } else {
+      timerPlay.cancel();
+    }
+
+    setState(() {
+      checkedTimerIsRunning = !checkedTimerIsRunning;
+
+      if (!checkedTimerIsRunning) {
+        timerListCount = 0;
+      }
+    });
   }
 
   // This widget is the root of your application.
@@ -125,6 +186,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             }
                           }
                         }
+                        listPcdFiles.sort(
+                          (a, b) {
+                            List<String> la = a.split(RegExp(r'[(-)]'));
+                            List<String> lb = b.split(RegExp(r'[(-)]'));
+
+                            if (int.parse(la[1]) > int.parse(lb[1])) {
+                              return 1;
+                            } else {
+                              return -1;
+                            }
+                          },
+                        );
                         selPcdFile = listPcdFiles[0];
                       },
                     );
@@ -136,33 +209,35 @@ class _HomeScreenState extends State<HomeScreen> {
                   elevation: 10,
                   shadowColor: Colors.black,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: 8,
-                    top: 8,
-                    right: 15,
-                    left: 15,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(
-                        Icons.folder_open_rounded,
-                        size: 30,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "PCD files Directory select",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
-                          // backgroundColor: Colors.blue,
+                child: FittedBox(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: 8,
+                      top: 8,
+                      right: 15,
+                      left: 15,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(
+                          Icons.folder_open_rounded,
+                          size: 30,
                         ),
-                      ),
-                    ],
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "PCD files Directory select",
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                            // backgroundColor: Colors.blue,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -207,42 +282,78 @@ class _HomeScreenState extends State<HomeScreen> {
                 right: 15,
                 left: 15,
               ),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xff4399F8),
-                  foregroundColor: Colors.white,
-                  elevation: 10,
-                  shadowColor: Colors.black,
-                ),
-                onPressed: checkedListUpdated
-                    ? () async {
-                        _visualizer(
-                          context,
-                          pointCloud: await pcdReader.read(selPcdFile),
-                        );
-                      }
-                    : null,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.file_open_outlined),
-                      SizedBox(
-                        width: 10,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xff4399F8),
+                        foregroundColor: Colors.white,
+                        elevation: 10,
+                        shadowColor: Colors.black,
                       ),
-                      Text(
-                        'Load',
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
-                          // backgroundColor: Colors.blue,
+                      onPressed: checkedListUpdated
+                          ? () async {
+                              _visualizer(
+                                context,
+                                pointCloud: await pcdReader.read(selPcdFile),
+                              );
+                            }
+                          : null,
+                      child: FittedBox(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(Icons.file_open_outlined),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              'Load',
+                              style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                                // backgroundColor: Colors.blue,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  FittedBox(
+                    fit: BoxFit.fill,
+                    child: SizedBox(
+                      width: 70,
+                      child: IconButton(
+                        padding: const EdgeInsets.only(
+                          left: 0,
+                          right: 0,
+                          top: 0,
+                          bottom: 25,
+                        ),
+                        onPressed: checkedListUpdated
+                            ? () async {
+                                timerPlaying();
+                                checkedTimerIsRunning
+                                    ? _visualizer(context,
+                                        pointCloud: await pcdReader
+                                            .read(listPcdFiles[timerListCount]))
+                                    : null;
+                              }
+                            : null,
+                        icon: const Icon(
+                          Icons.play_circle_outline_outlined,
+                          size: 50,
+                          shadows: [],
+                        ),
+                        color: Colors.green,
+                        alignment: Alignment.center,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

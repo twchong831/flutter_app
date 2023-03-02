@@ -1,4 +1,5 @@
 // import 'package:ditredi/ditredi.dart';
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -17,26 +18,40 @@ class PcdVisualizer extends StatefulWidget {
     required this.outputPointCloud,
   });
 
+  void pointCloudUpdate(List<Point3D> pc) {
+    outputPointCloud = pc;
+  }
+
   @override
   State<PcdVisualizer> createState() => _PcdVisualizerState();
+
+  void updated(List<Point3D> pointCloud) {}
 }
 
 class _PcdVisualizerState extends State<PcdVisualizer> {
+  bool checkedUpdate = false;
+
   final _controller = DiTreDiController(
     rotationX: 0,
-    rotationY: 0,
+    rotationY: 180,
     rotationZ: 0,
     // light: vector.Vector3(-0.5, -0.5, 0.5),
     maxUserScale: 5.0,
     minUserScale: 0.05,
   );
 
-  // late Model3D<Model3D<dynamic>> pointcloudModel;
-
   @override
   void initState() {
     super.initState();
     // pointcloudModel = widget.outputPointCloud;
+  }
+
+  void updated(List<Point3D> pc) {
+    setState(() {
+      print("update cloud : ${pc.length}");
+      widget.outputPointCloud = pc;
+      checkedUpdate = true;
+    });
   }
 
   @override
@@ -57,7 +72,7 @@ class _PcdVisualizerState extends State<PcdVisualizer> {
                   controller: _controller,
                   child: KanaviDiTreDi(
                     // figures: (widget.outputPointCloud),
-                    //output list<point3d>
+                    // output list<point3d>
                     figures: [
                       PointCloud3D(
                         widget.outputPointCloud,
