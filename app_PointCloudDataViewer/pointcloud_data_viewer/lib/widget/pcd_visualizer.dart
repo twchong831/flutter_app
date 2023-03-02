@@ -1,6 +1,14 @@
 // import 'package:ditredi/ditredi.dart';
-import 'package:ditredi/ditredi.dart';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:pointcloud_data_viewer/ditredi_/kanavi_ditredi.dart';
+import 'package:pointcloud_data_viewer/ditredi_/model/gird_3d.dart';
+import 'package:pointcloud_data_viewer/ditredi_/model/guid_axis_3d.dart';
+import 'package:pointcloud_data_viewer/ditredi_/model/point_cloud_3d.dart';
+import 'package:vector_math/vector_math_64.dart';
+import 'package:flutter/src/material/colors.dart' as colorcode;
+// import 'package:flutter/src/material/colors.dart' as colorcode;
 
 class PcdVisualizer extends StatefulWidget {
   List<Point3D> outputPointCloud = [];
@@ -47,9 +55,21 @@ class _PcdVisualizerState extends State<PcdVisualizer> {
               Expanded(
                 child: DiTreDiDraggable(
                   controller: _controller,
-                  child: DiTreDi(
-                    figures: (widget.outputPointCloud),
+                  child: KanaviDiTreDi(
+                    // figures: (widget.outputPointCloud),
                     //output list<point3d>
+                    figures: [
+                      PointCloud3D(
+                        widget.outputPointCloud,
+                        Vector3(0, 0, 0),
+                        pointWidth: 4,
+                        // color: colorcode.Colors.amber,
+                      ),
+                      Grid3D(const Point(10, 15), const Point(-10, 0), 1,
+                          lineWidth: 1,
+                          color: colorcode.Colors.white.withOpacity(0.6)),
+                      GuideAxis3D(1, lineWidth: 10),
+                    ],
                     controller: _controller,
                     config: const DiTreDiConfig(
                       defaultPointWidth: 3,
