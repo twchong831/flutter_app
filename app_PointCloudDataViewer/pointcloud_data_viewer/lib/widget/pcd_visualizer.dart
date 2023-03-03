@@ -32,7 +32,6 @@ class PcdVisualizer extends StatefulWidget {
 }
 
 class _PcdVisualizerState extends State<PcdVisualizer> {
-  bool checkedUpdate = false;
   late Timer timerUpdate;
   List<Point3D> vsPc = [];
 
@@ -45,11 +44,7 @@ class _PcdVisualizerState extends State<PcdVisualizer> {
     minUserScale: 0.05,
   );
 
-  KanaviDiTreDi mViewer = KanaviDiTreDi(figures: [
-    Grid3D(const Point(10, 15), const Point(-10, 0), 1,
-        lineWidth: 1, color: colorcode.Colors.white.withOpacity(0.6)),
-    GuideAxis3D(1, lineWidth: 10),
-  ]);
+  late KanaviDiTreDi mViewer;
 
   @override
   void initState() {
@@ -91,29 +86,17 @@ class _PcdVisualizerState extends State<PcdVisualizer> {
             children: [
               Expanded(
                 child: DiTreDiDraggable(
-                  controller: _controller,
-                  // child: KanaviDiTreDi(
-                  //   figures: [
-                  //     PointCloud3D(widget.outputPointCloud, Vector3(0, 0, 0),
-                  //         pointWidth: 3),
-                  //     Grid3D(const Point(10, 15), const Point(-10, 0), 1,
-                  //         lineWidth: 1,
-                  //         color: colorcode.Colors.white.withOpacity(0.6)),
-                  //     GuideAxis3D(1, lineWidth: 10),
-                  //   ],
-                  //   controller: _controller,
-                  // ),
-                  child: mViewer.updateFigures(
-                    [
-                      PointCloud3D(vsPc, Vector3(0, 0, 0), pointWidth: 3),
-                      Grid3D(const Point(10, 15), const Point(-10, 0), 1,
-                          lineWidth: 1,
-                          color: colorcode.Colors.white.withOpacity(0.6)),
-                      GuideAxis3D(1, lineWidth: 10),
-                    ],
-                    _controller,
-                  ),
-                ),
+                    controller: _controller,
+                    child: mViewer = KanaviDiTreDi(
+                      figures: [
+                        PointCloud3D(vsPc, Vector3(0, 0, 0), pointWidth: 3),
+                        Grid3D(const Point(10, 15), const Point(-10, 0), 1,
+                            lineWidth: 1,
+                            color: colorcode.Colors.white.withOpacity(0.6)),
+                        GuideAxis3D(1, lineWidth: 10),
+                      ],
+                      controller: _controller,
+                    )),
               ),
             ],
           ),

@@ -45,6 +45,7 @@ class KanaviDiTreDi extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("check bounds : $bounds");
     return ClipRect(
       child: CustomPaint(
         size: Size.infinite,
@@ -60,7 +61,6 @@ class KanaviDiTreDi extends StatelessWidget {
 
   Widget updateFigures(
     List<Model3D> figure,
-    DiTreDiController? controller,
   ) {
     return ClipRect(
       child: CustomPaint(
@@ -68,7 +68,7 @@ class KanaviDiTreDi extends StatelessWidget {
         painter: CanvasModelPainter(
           figure,
           bounds,
-          controller = controller ?? DiTreDiController(),
+          controller,
           config,
         ),
       ),
