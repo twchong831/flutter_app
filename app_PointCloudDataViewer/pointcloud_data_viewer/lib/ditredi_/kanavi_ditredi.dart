@@ -57,6 +57,23 @@ class KanaviDiTreDi extends StatelessWidget {
       ),
     );
   }
+
+  Widget updateFigures(
+    List<Model3D> figure,
+    DiTreDiController? controller,
+  ) {
+    return ClipRect(
+      child: CustomPaint(
+        size: Size.infinite,
+        painter: CanvasModelPainter(
+          figure,
+          bounds,
+          controller = controller ?? DiTreDiController(),
+          config,
+        ),
+      ),
+    );
+  }
 }
 
 /// A widget that controls the [DiTreDi] camera with gestures.
@@ -93,7 +110,7 @@ class _DiTreDiDraggableState extends State<DiTreDiDraggable> {
   var _scaleBase = 0.0;
 
   //rotation X limit release
-  double calculateRotationX(double x, double dy) {
+  double _calculateRotationX(double x, double dy) {
     return (x - dy / 2).clamp(-100, 130);
   }
 
@@ -128,7 +145,7 @@ class _DiTreDiDraggableState extends State<DiTreDiDraggable> {
             userScale: _scaleBase * data.scale,
             rotationX: widget.rotationEnabled
                 // ? (controller.rotationX - dy / 2).clamp(-90, -20)
-                ? calculateRotationX(controller.rotationX, dy)
+                ? _calculateRotationX(controller.rotationX, dy)
                 : null,
             rotationY: widget.rotationEnabled
                 ? ((controller.rotationY - dx / 2 + 360) % 360).clamp(0, 360)
