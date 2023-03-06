@@ -1,7 +1,6 @@
 import 'package:ditredi/src/controller/ditredi_controller.dart';
 import 'package:ditredi/src/model/ditredi_config.dart';
 import 'package:ditredi/src/model/model_3d.dart';
-import 'package:ditredi/src/painter/canvas_model_painter.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pointcloud_data_viewer/ditredi_/karnavi_canvas_model_painter.dart';
@@ -35,6 +34,9 @@ class KanaviDiTreDi extends StatelessWidget {
   /// The controller to controll the camera.
   final DiTreDiController controller;
 
+  //painter
+  late KanaviCanvasModelPainter _mPainter;
+
   /// Creates a [DiTreDi] widget.
   KanaviDiTreDi({
     Key? key,
@@ -51,7 +53,7 @@ class KanaviDiTreDi extends StatelessWidget {
       child: CustomPaint(
         size: Size.infinite,
         // painter: CanvasModelPainter(
-        painter: KanaviCanvasModelPainter(
+        painter: _mPainter = KanaviCanvasModelPainter(
           figures,
           bounds,
           controller,
@@ -61,20 +63,8 @@ class KanaviDiTreDi extends StatelessWidget {
     );
   }
 
-  Widget updateFigures(
-    List<Model3D> figure,
-  ) {
-    return ClipRect(
-      child: CustomPaint(
-        size: Size.infinite,
-        painter: CanvasModelPainter(
-          figure,
-          bounds,
-          controller,
-          config,
-        ),
-      ),
-    );
+  DiTreDiController getBeforeViewPoint() {
+    return _mPainter.getBeforeViewPoint();
   }
 }
 

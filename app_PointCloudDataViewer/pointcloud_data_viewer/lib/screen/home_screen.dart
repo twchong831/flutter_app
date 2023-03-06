@@ -33,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool checkedTimerIsRunning = false;
   int timerListCount = 0;
   bool checkedTimerViewerUpdated = false;
+  DiTreDiController? _beforeViewConfig;
 
   late PcdVisualizer mVisualizer;
 
@@ -47,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (context) => mVisualizer = PcdVisualizer(
             outputPointCloud: pointCloud,
             checkedUpdateCloud: checkedViewrTimerUpdateFunc,
+            controller: _beforeViewConfig,
           ),
         ),
       );
@@ -61,6 +63,8 @@ class _HomeScreenState extends State<HomeScreen> {
           timerPlay.cancel();
         }
         checkedVisualization = false;
+        _beforeViewConfig = mVisualizer.getBeforeViewPoint();
+        // print("home check viewPoint $_beforeViewPoint");
       }
     });
   }

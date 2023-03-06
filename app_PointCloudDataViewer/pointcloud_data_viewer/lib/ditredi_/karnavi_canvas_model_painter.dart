@@ -38,8 +38,11 @@ class KanaviCanvasModelPainter extends CustomPainter implements PaintViewPort {
     this._figures,
     Aabb3? bounds,
     this._controller,
-    this._config,
-  ) : super(repaint: _controller) {
+    this._config, {
+    Vector3? rotationValue,
+    Vector3? centerValue,
+    double? scale,
+  }) : super(repaint: _controller) {
     _controller.addListener(() {
       _isDirty = true;
     });
@@ -60,6 +63,10 @@ class KanaviCanvasModelPainter extends CustomPainter implements PaintViewPort {
     }
   }
 
+  DiTreDiController getBeforeViewPoint() {
+    return _controller;
+  }
+
   /////////////////////////
   // paint cache values
   /////////////////////////
@@ -77,18 +84,17 @@ class KanaviCanvasModelPainter extends CustomPainter implements PaintViewPort {
     _controller.viewScale = math.min(_viewPortWidth, _viewPortHeight);
     _isDirty = false;
 
-    final rotationX = _degreeToRadians(_controller.rotationX);
-    final rotationY = _degreeToRadians(_controller.rotationY);
-    final rotationZ = _degreeToRadians(_controller.rotationZ);
-    print('rotataion : $rotationX, $rotationY, $rotationZ');
+    final double rotationX, rotationY, rotationZ;
+    final double dx, dy, dz;
+    final double scale;
 
-    final dx = _bounds.center.x;
-    final dy = _bounds.center.y;
-    final dz = _bounds.center.z;
-    print('bounds : $dx, $dy, $dz');
-
-    final scale = _controller.scale;
-    print('scale : $scale');
+    rotationX = _degreeToRadians(_controller.rotationX);
+    rotationY = _degreeToRadians(_controller.rotationY);
+    rotationZ = _degreeToRadians(_controller.rotationZ);
+    dx = _bounds.center.x;
+    dy = _bounds.center.y;
+    dz = _bounds.center.z;
+    scale = _controller.scale;
 
     _matrix.setIdentity();
 
@@ -183,6 +189,7 @@ class KanaviCanvasModelPainter extends CustomPainter implements PaintViewPort {
   void _setupBounds(List<Model3D<dynamic>> figures, Aabb3? bounds) {
     if (figures.isEmpty) return;
 
+    // print('update Bounds');
     // ignore: prefer_conditional_assignment
     if (bounds == null) {
       // final points =
@@ -205,6 +212,10 @@ class KanaviCanvasModelPainter extends CustomPainter implements PaintViewPort {
 
   double _degreeToRadians(double degree) {
     return degree * (math.pi / 180.0);
+  }
+
+  double _radians2Degree(double radian) {
+    return radian * 180.0 / math.pi;
   }
 
   /// Checks if vector is visible in the current viewport.
