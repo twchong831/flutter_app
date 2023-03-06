@@ -4,6 +4,7 @@ import 'package:ditredi/src/model/model_3d.dart';
 import 'package:ditredi/src/painter/canvas_model_painter.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pointcloud_data_viewer/ditredi_/karnavi_canvas_model_painter.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 export 'package:ditredi/src/extensions/double_extensions.dart';
@@ -26,6 +27,7 @@ class KanaviDiTreDi extends StatelessWidget {
 
   /// Bounds of the 3D space.
   final Aabb3? bounds;
+  final Aabb3 sBounds = Aabb3();
 
   /// The [DitrediConfig] to use.
   final DiTreDiConfig config;
@@ -45,11 +47,11 @@ class KanaviDiTreDi extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("check bounds : $bounds");
     return ClipRect(
       child: CustomPaint(
         size: Size.infinite,
-        painter: CanvasModelPainter(
+        // painter: CanvasModelPainter(
+        painter: KanaviCanvasModelPainter(
           figures,
           bounds,
           controller,

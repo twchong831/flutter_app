@@ -14,9 +14,11 @@ import 'package:vector_math/vector_math_64.dart';
 
 class PcdVisualizer extends StatefulWidget {
   List<Point3D> outputPointCloud = [];
+  final bool checkedUpdateCloud;
   PcdVisualizer({
     super.key,
     required this.outputPointCloud,
+    this.checkedUpdateCloud = false,
   });
 
   bool checkedUpdatePointCloud = false;
@@ -49,7 +51,11 @@ class _PcdVisualizerState extends State<PcdVisualizer> {
   @override
   void initState() {
     super.initState();
-    _timerInit();
+    if (widget.checkedUpdateCloud) {
+      _timerInit();
+    } else {
+      vsPc = widget.outputPointCloud;
+    }
     // pointcloudModel = widget.outputPointCloud;
   }
 
@@ -87,6 +93,8 @@ class _PcdVisualizerState extends State<PcdVisualizer> {
               Expanded(
                 child: DiTreDiDraggable(
                     controller: _controller,
+                    rotationEnabled: true,
+                    scaleEnabled: true,
                     child: mViewer = KanaviDiTreDi(
                       figures: [
                         PointCloud3D(vsPc, Vector3(0, 0, 0), pointWidth: 3),
@@ -96,6 +104,7 @@ class _PcdVisualizerState extends State<PcdVisualizer> {
                         GuideAxis3D(1, lineWidth: 10),
                       ],
                       controller: _controller,
+                      // bounds: Aabb3(),
                     )),
               ),
             ],

@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool checkedVisualization = false;
   bool checkedListUpdated = false;
+  bool checkedViewrTimerUpdateFunc = false;
 
   late Timer timerPlay;
   bool checkedTimerIsRunning = false;
@@ -36,8 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
   late PcdVisualizer mVisualizer;
 
   _visualizer(BuildContext context, {required pointCloud}) async {
-    print('checkedVisualization $checkedVisualization');
-    print('checkedTimerIsRunning $checkedTimerIsRunning');
     if (!checkedVisualization) {
       await Navigator.push(
         context,
@@ -47,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // ),
           builder: (context) => mVisualizer = PcdVisualizer(
             outputPointCloud: pointCloud,
+            checkedUpdateCloud: checkedViewrTimerUpdateFunc,
           ),
         ),
       );
@@ -54,10 +54,9 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     setState(() {
-      // print('$checkedVisualization , $checkedTimerIsRunning');
       if (checkedVisualization) {
         if (checkedTimerIsRunning) {
-          print("timer cancle");
+          // print("timer cancle");
           checkedTimerIsRunning = false;
           timerPlay.cancel();
         }
@@ -113,9 +112,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
         // mVisualizer.updated(pointCloud);
       }
-      print("timer point cloud size ${pointCloud.length}");
+      // print("timer point cloud size ${pointCloud.length}");
       mVisualizer.updatedPointCloud(pointCloud);
-      print('timer update 1s : $timerListCount');
+      // print('timer update 1s : $timerListCount');
       checkedTimerViewerUpdated = !checkedTimerViewerUpdated;
     });
   }
@@ -191,14 +190,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           checkedListUpdated = true;
                           listPcdFiles.sort(
                             (a, b) {
-                              List<String> la = a.split(RegExp(r'[(-)]'));
-                              List<String> lb = b.split(RegExp(r'[(-)]'));
+                              if (a.contains('(') && a.contains(')')) {
+                                List<String> la = a.split(RegExp(r'[(-)]'));
+                                List<String> lb = b.split(RegExp(r'[(-)]'));
 
-                              if (int.parse(la[1]) > int.parse(lb[1])) {
-                                return 1;
-                              } else {
-                                return -1;
+                                if (int.parse(la[1]) > int.parse(lb[1])) {
+                                  return 1;
+                                } else {
+                                  return -1;
+                                }
                               }
+                              return -1;
                             },
                           );
                         } else {
@@ -268,7 +270,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     () {
                       selPcdFile = value;
                       if (selPcdFile != strNone) {
-                        print("list sel update");
                         checkedListUpdated = true;
                       } else {
                         checkedListUpdated = false;
@@ -302,6 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       onPressed: checkedListUpdated
                           ? () async {
+                              checkedViewrTimerUpdateFunc = false;
                               _visualizer(
                                 context,
                                 pointCloud: await pcdReader.read(selPcdFile),
@@ -343,12 +345,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         onPressed: checkedListUpdated
                             ? () async {
+                                checkedViewrTimerUpdateFunc = true;
+                                // timerPlaying();
+                                _visualizer(context,
+                                    pointCloud: await pcdReader
+                                        .read(listPcdFiles[timerListCount]));
                                 timerPlaying();
-                                checkedTimerIsRunning
-                                    ? _visualizer(context,
-                                        pointCloud: await pcdReader
-                                            .read(listPcdFiles[timerListCount]))
-                                    : null;
                               }
                             : null,
                         icon: const Icon(

@@ -67,7 +67,6 @@ class PCDReader {
           checkHsv = true;
           break;
         default:
-          print('defalut...$i');
           break;
       }
     }
@@ -104,7 +103,7 @@ class PCDReader {
     // parse
     List sp;
     Point3D pt;
-    Color c = Colors.black;
+    Color c = Colors.white;
     int colorDec = 0;
     String colorHex = '';
     for (int i = PcdFormat.points; i < list.length; i++) {
@@ -133,13 +132,38 @@ class PCDReader {
               double.parse(sp[2]), // z
             ),
             color: c);
-      } else {
+      } else if (sp.length == 3) {
         //only points
         pt = Point3D(
             vector.Vector3(
               double.parse(sp[0]), // x
               double.parse(sp[1]), // y
               double.parse(sp[2]), // z
+            ),
+            color: c);
+      } else {
+        // print('${sp.length} : $sp');
+        double x = 0, y = 0, z = 0;
+        int count = 0;
+        for (var i in sp) {
+          if (i.toString().isNotEmpty) {
+            if (count == 0) {
+              x = double.parse(i);
+              count++;
+            } else if (count == 1) {
+              y = double.parse(i);
+              count++;
+            } else if (count == 2) {
+              z = double.parse(i);
+              count++;
+            }
+          }
+        }
+        pt = Point3D(
+            vector.Vector3(
+              x, // x
+              y, // y
+              z, // z
             ),
             color: c);
       }
