@@ -1,7 +1,9 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:pointcloud_data_viewer/ditredi_/kanavi_ditredi.dart';
+import 'package:pointcloud_data_viewer/ditredi_/kanavi_ditredi_stateful.dart';
 import 'package:pointcloud_data_viewer/ditredi_/model/gird_3d.dart';
 import 'package:pointcloud_data_viewer/ditredi_/model/guid_axis_3d.dart';
 import 'package:pointcloud_data_viewer/ditredi_/model/point_cloud_3d.dart';
@@ -10,14 +12,13 @@ import 'package:flutter/src/material/colors.dart' as colorcode;
 // import 'package:flutter/src/material/colors.dart' as colorcode;
 
 class PcdVisualizer extends StatefulWidget {
-  List<Point3D> outputPointCloud = [];
+  List<Point3D> pointCloud;
   final bool checkedUpdateCloud;
   final DiTreDiController controller;
-  late KanaviDiTreDi mViewer;
 
   PcdVisualizer({
     super.key,
-    required this.outputPointCloud,
+    required this.pointCloud,
     DiTreDiController? controller,
     this.checkedUpdateCloud = false,
   }) : controller = controller ??
@@ -30,47 +31,38 @@ class PcdVisualizer extends StatefulWidget {
               minUserScale: 0.05,
             );
 
-  bool checkedUpdatePointCloud = false;
-  void updatedPointCloud(List<Point3D> pc) {
-    outputPointCloud = pc;
-    checkedUpdatePointCloud = true;
-  }
-
-  // late Timer timerUpdate;
+  late KanaviDiTreDiFul mViewer;
 
   DiTreDiController getBeforeViewPoint() {
     // return List.empty();
     return mViewer.getBeforeViewPoint();
   }
 
+  // @override
+  // State<PcdVisualizer> createState() => _PcdVisualizerState();
+
   @override
   State<PcdVisualizer> createState() => _PcdVisualizerState();
+
+  // void updatedPointCloud(List<Point3D> pc) =>
+  //     pcdVisualizerState.updatedPointCloud(pc);
+  // void updatedPointCloud(List<Point3D> pc) {
+  //   pointCloud = pc;
+  // }
 }
 
 class _PcdVisualizerState extends State<PcdVisualizer> {
   late Timer timerUpdate;
   List<Point3D> vsPc = [];
 
-  // final _controller = DiTreDiController(
-  //   rotationX: 0,
-  //   rotationY: 180,
-  //   rotationZ: 0,
-  //   // light: vector.Vector3(-0.5, -0.5, 0.5),
-  //   maxUserScale: 5.0,
-  //   minUserScale: 0.05,
-  // );
-
-  // late KanaviDiTreDi mViewer;
-
   @override
   void initState() {
     super.initState();
     if (widget.checkedUpdateCloud) {
-      _timerInit();
-    } else {
-      vsPc = widget.outputPointCloud;
+      // _timerInit();
     }
-    // pointcloudModel = widget.outputPointCloud;
+    vsPc = widget.pointCloud;
+    print('pcdVisual : init : ${widget.pointCloud.length}');
   }
 
   _visualizer(
@@ -78,7 +70,7 @@ class _PcdVisualizerState extends State<PcdVisualizer> {
     required figure,
     required controller,
   }) {
-    return widget.mViewer = KanaviDiTreDi(
+    return widget.mViewer = KanaviDiTreDiFul(
       figures: figure,
       controller: controller,
     );
@@ -89,22 +81,41 @@ class _PcdVisualizerState extends State<PcdVisualizer> {
     super.dispose();
   }
 
-  void _onTimerFunc(Timer timer) {
-    // mount check
+  void updatedPointCloud(List<Point3D> pc) {
+    print('update $mounted ${pc.length}');
     if (mounted) {
       setState(() {
-        // print("pcdVisual Timer active");
-        vsPc = widget.outputPointCloud;
+        vsPc = pc;
       });
     } else {
-      // print('unmounted Timer cancel');
-      timer.cancel();
+      print("unmounted,..");
+    }
+  }
+
+  void _onTimerFunc(Timer timer) {
+    // mount check
+    // if (mounted) {
+    //   setState(() {
+    //     print("pcdVisual Timer active");
+    //     vsPc = widget.pointCloud;
+    //   });
+    // } else {
+    //   print('unmounted Timer cancel');
+    //   timer.cancel();
+    // }
+    if (mounted) {
+      setState(() {
+        print('only check mounted? $mounted');
+      });
     }
   }
 
   void _timerInit() {
     timerUpdate = Timer.periodic(
-        const Duration(microseconds: 40), (timer) => _onTimerFunc(timer));
+      // const Duration(microseconds: 40),
+      const Duration(seconds: 1),
+      (timer) => _onTimerFunc(timer),
+    );
   }
 
   @override

@@ -37,7 +37,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   late PcdVisualizer mVisualizer;
 
-  _visualizer(BuildContext context, {required pointCloud}) async {
+  _visualizer(BuildContext context, {required List<Point3D> pointCloud}) async {
+    print('home : visualization pcd : ${pointCloud.length}');
+
     if (!checkedVisualization) {
       await Navigator.push(
         context,
@@ -46,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
           //   outputPointCloud: pointCloud,
           // ),
           builder: (context) => mVisualizer = PcdVisualizer(
-            outputPointCloud: pointCloud,
+            pointCloud: pointCloud,
             checkedUpdateCloud: checkedViewrTimerUpdateFunc,
             controller: _beforeViewConfig,
           ),
@@ -110,15 +112,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void onUpdateListNum(Timer timer) async {
     pointCloud = await pcdReader.read(listPcdFiles[timerListCount]);
     setState(() {
+      print("home Timer Active");
       timerListCount++;
       if (timerListCount > listPcdFiles.length - 1) {
         timerListCount = 0;
-
-        // mVisualizer.updated(pointCloud);
       }
-      // print("timer point cloud size ${pointCloud.length}");
-      mVisualizer.updatedPointCloud(pointCloud);
-      // print('timer update 1s : $timerListCount');
+      print('timer point cloud upate : ${pointCloud.length}');
+      // mVisualizer.updatedPointCloud(pointCloud);
       checkedTimerViewerUpdated = !checkedTimerViewerUpdated;
     });
   }
