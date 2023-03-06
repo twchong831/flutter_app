@@ -30,3 +30,5 @@ A new Flutter project for Point Cloud Data Visualizer.
 ## visualization
 
 <img src="./image/3.%20visualize_1.png" width="50%" heigth="50%"><img src="./image/3.%20visualize_2.png" width="50%" heigth="50%">
+
+![gif](./image/Mar-06-2023%2016-34-10.gif)

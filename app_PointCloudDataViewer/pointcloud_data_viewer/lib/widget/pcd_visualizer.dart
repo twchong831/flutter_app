@@ -93,11 +93,11 @@ class _PcdVisualizerState extends State<PcdVisualizer> {
     // mount check
     if (mounted) {
       setState(() {
-        print("pcdVisual Timer active");
+        // print("pcdVisual Timer active");
         vsPc = widget.outputPointCloud;
       });
     } else {
-      print('unmounted Timer cancel');
+      // print('unmounted Timer cancel');
       timer.cancel();
     }
   }
