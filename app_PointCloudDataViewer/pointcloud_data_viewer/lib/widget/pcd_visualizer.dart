@@ -3,6 +3,8 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/instance_manager.dart';
 import 'package:pointcloud_data_viewer/ditredi_/kanavi_ditredi_stateful.dart';
 import 'package:pointcloud_data_viewer/ditredi_/model/gird_3d.dart';
 import 'package:pointcloud_data_viewer/ditredi_/model/guid_axis_3d.dart';
@@ -10,6 +12,10 @@ import 'package:pointcloud_data_viewer/ditredi_/model/point_cloud_3d.dart';
 import 'package:vector_math/vector_math_64.dart';
 import 'package:flutter/src/material/colors.dart' as colorcode;
 // import 'package:flutter/src/material/colors.dart' as colorcode;
+
+class ReactiveController extends GetxController {
+  static ReactiveController get to => Get.find();
+}
 
 class PcdVisualizer extends StatefulWidget {
   List<Point3D> pointCloud;
@@ -120,37 +126,32 @@ class _PcdVisualizerState extends State<PcdVisualizer> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Point Cloud Data Visualization"),
-      ),
-      body: Container(
-        color: const Color.fromARGB(255, 2, 2, 80), //set background
-        child: SafeArea(
-          child: Flex(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            direction: Axis.vertical,
-            children: [
-              Expanded(
-                child: DiTreDiDraggable(
+    return Container(
+      color: const Color.fromARGB(255, 2, 2, 80), //set background
+      child: SafeArea(
+        child: Flex(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          direction: Axis.vertical,
+          children: [
+            Expanded(
+              child: DiTreDiDraggable(
+                controller: widget.controller,
+                rotationEnabled: true,
+                scaleEnabled: true,
+                child: _visualizer(
+                  context,
+                  figure: [
+                    PointCloud3D(vsPc, Vector3(0, 0, 0), pointWidth: 3),
+                    Grid3D(const Point(10, 15), const Point(-10, 0), 1,
+                        lineWidth: 1,
+                        color: colorcode.Colors.white.withOpacity(0.6)),
+                    GuideAxis3D(1, lineWidth: 10),
+                  ],
                   controller: widget.controller,
-                  rotationEnabled: true,
-                  scaleEnabled: true,
-                  child: _visualizer(
-                    context,
-                    figure: [
-                      PointCloud3D(vsPc, Vector3(0, 0, 0), pointWidth: 3),
-                      Grid3D(const Point(10, 15), const Point(-10, 0), 1,
-                          lineWidth: 1,
-                          color: colorcode.Colors.white.withOpacity(0.6)),
-                      GuideAxis3D(1, lineWidth: 10),
-                    ],
-                    controller: widget.controller,
-                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

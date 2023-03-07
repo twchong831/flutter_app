@@ -1,12 +1,14 @@
-import 'dart:async';
 import 'dart:io';
 
 // import 'package:ditredi/ditredi.dart';
 import 'package:ditredi/ditredi.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pointcloud_data_viewer/files/pcd_reader.dart';
-import 'package:pointcloud_data_viewer/widget/pcd_visualizer.dart';
+import 'package:pointcloud_data_viewer/screen/viewer_screen.dart';
+
+// class HomeController extends GetxController {}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,51 +27,10 @@ class _HomeScreenState extends State<HomeScreen> {
   String strNone = "NONE";
   List<String> listPcdFiles = [];
 
-  bool checkedVisualization = false;
   bool checkedListUpdated = false;
   bool checkedViewrTimerUpdateFunc = false;
 
-  late Timer timerPlay;
-  bool checkedTimerIsRunning = false;
-  int timerListCount = 0;
-  bool checkedTimerViewerUpdated = false;
   DiTreDiController? _beforeViewConfig;
-
-  late PcdVisualizer mVisualizer;
-
-  _visualizer(BuildContext context, {required List<Point3D> pointCloud}) async {
-    print('home : visualization pcd : ${pointCloud.length}');
-
-    if (!checkedVisualization) {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          // builder: (context) => PcdVisualizer(
-          //   outputPointCloud: pointCloud,
-          // ),
-          builder: (context) => mVisualizer = PcdVisualizer(
-            pointCloud: pointCloud,
-            checkedUpdateCloud: checkedViewrTimerUpdateFunc,
-            controller: _beforeViewConfig,
-          ),
-        ),
-      );
-      checkedVisualization = true;
-    }
-
-    setState(() {
-      if (checkedVisualization) {
-        if (checkedTimerIsRunning) {
-          // print("timer cancle");
-          checkedTimerIsRunning = false;
-          timerPlay.cancel();
-        }
-        checkedVisualization = false;
-        _beforeViewConfig = mVisualizer.getBeforeViewPoint();
-        // print("home check viewPoint $_beforeViewPoint");
-      }
-    });
-  }
 
   // generate dropdownMenuItem
   List<DropdownMenuItem<String>> generateFileListMenu(List<String> list) {
@@ -109,44 +70,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return l;
   }
 
-  void onUpdateListNum(Timer timer) async {
-    pointCloud = await pcdReader.read(listPcdFiles[timerListCount]);
-    setState(() {
-      print("home Timer Active");
-      timerListCount++;
-      if (timerListCount > listPcdFiles.length - 1) {
-        timerListCount = 0;
-      }
-      print('timer point cloud upate : ${pointCloud.length}');
-      // mVisualizer.updatedPointCloud(pointCloud);
-      checkedTimerViewerUpdated = !checkedTimerViewerUpdated;
-    });
-  }
-
-  //timer playing
-  void timerPlaying() {
-    if (!checkedTimerIsRunning) {
-      timerPlay = Timer.periodic(
-        const Duration(microseconds: 100),
-        // const Duration(seconds: 1),
-        (timer) => onUpdateListNum(timer),
-      );
-    } else {
-      timerPlay.cancel();
-    }
-
-    setState(() {
-      checkedTimerIsRunning = !checkedTimerIsRunning;
-
-      if (!checkedTimerIsRunning) {
-        timerListCount = 0;
-      }
-    });
-  }
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // getx controller set
+    // Get.put(HomeController());
     return Scaffold(
       appBar: AppBar(
         title: const Text("Point Cloud Data File Visualizer"),
@@ -167,7 +95,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: ElevatedButton(
                 onPressed: () async {
-                  timerListCount = 0;
                   if (listPcdFiles.isNotEmpty) listPcdFiles.clear();
                   String? selectedDirectory =
                       await FilePicker.platform.getDirectoryPath();
@@ -308,10 +235,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: checkedListUpdated
                           ? () async {
                               checkedViewrTimerUpdateFunc = false;
-                              _visualizer(
-                                context,
-                                pointCloud: await pcdReader.read(selPcdFile),
-                              );
+                              _beforeViewConfig = await Get.to(ViewScreen(
+                                pcdList: [selPcdFile],
+                                ditreControl: _beforeViewConfig,
+                              ));
                             }
                           : null,
                       child: FittedBox(
@@ -350,11 +277,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPressed: checkedListUpdated
                             ? () async {
                                 checkedViewrTimerUpdateFunc = true;
-                                // timerPlaying();
-                                _visualizer(context,
-                                    pointCloud: await pcdReader
-                                        .read(listPcdFiles[timerListCount]));
-                                timerPlaying();
+                                _beforeViewConfig = await Get.to(ViewScreen(
+                                  pcdList: listPcdFiles,
+                                  ditreControl: _beforeViewConfig,
+                                ));
                               }
                             : null,
                         icon: const Icon(

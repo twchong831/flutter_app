@@ -14,6 +14,7 @@ A new Flutter project for Point Cloud Data Visualizer.
 2. [file_picker](https://pub.dev/packages/file_picker)
 3. [path_provider](https://pub.dev/packages/path_provider)
 4. [cross_scroll](https://pub.dev/packages/cross_scroll)
+5. [get](https://pub.dev/packages/get)
 
 ## result
 
@@ -31,4 +32,4 @@ A new Flutter project for Point Cloud Data Visualizer.
 
 <img src="./image/3.%20visualize_1.png" width="50%" heigth="50%"><img src="./image/3.%20visualize_2.png" width="50%" heigth="50%">
 
-![gif](./image/Mar-06-2023%2016-34-10.gif)
+![gif](./image/Mar-07-2023%2017-25-28.gif)

@@ -40,6 +40,7 @@ dependencies:
   path_provider: ^2.0.13
   file_picker: ^5.2.5
   cross_scroll: ^0.0.75
+  get: ^4.6.5
   # ditredi: 
     # path: ./lib/ditredi
 
