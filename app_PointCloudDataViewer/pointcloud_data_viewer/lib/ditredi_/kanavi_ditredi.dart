@@ -20,7 +20,7 @@ export 'package:ditredi/src/parser/obj_parser.dart';
 export 'package:ditredi/src/controller/ditredi_controller.dart';
 
 /// A widget that displays a 3D objects.
-class KanaviDiTreDi extends StatelessWidget {
+class KDiTreDi extends StatelessWidget {
   /// List of [Model3D] to display.
   final List<Model3D> figures;
 
@@ -34,11 +34,8 @@ class KanaviDiTreDi extends StatelessWidget {
   /// The controller to controll the camera.
   final DiTreDiController controller;
 
-  //painter
-  late KanaviCanvasModelPainter _mPainter;
-
   /// Creates a [DiTreDi] widget.
-  KanaviDiTreDi({
+  KDiTreDi({
     Key? key,
     required this.figures,
     DiTreDiController? controller,
@@ -53,7 +50,7 @@ class KanaviDiTreDi extends StatelessWidget {
       child: CustomPaint(
         size: Size.infinite,
         // painter: CanvasModelPainter(
-        painter: _mPainter = KanaviCanvasModelPainter(
+        painter: KanaviCanvasModelPainter(
           figures,
           bounds,
           controller,
@@ -62,14 +59,10 @@ class KanaviDiTreDi extends StatelessWidget {
       ),
     );
   }
-
-  DiTreDiController getBeforeViewPoint() {
-    return _mPainter.getBeforeViewPoint();
-  }
 }
 
 /// A widget that controls the [DiTreDi] camera with gestures.
-class DiTreDiDraggable extends StatefulWidget {
+class KDiTreDiDraggable extends StatefulWidget {
   /// The [DiTreDiController] to control.
   /// Should be the same as the one used in the [DiTreDi] widget.
   final DiTreDiController controller;
@@ -83,8 +76,8 @@ class DiTreDiDraggable extends StatefulWidget {
   /// If true, the zoom will be changed with the mouse scroll.
   final bool scaleEnabled;
 
-  /// Creates a [DiTreDiDraggable] widget.
-  const DiTreDiDraggable({
+  /// Creates a [KDiTreDiDraggable] widget.
+  const KDiTreDiDraggable({
     Key? key,
     required this.controller,
     required this.child,
@@ -93,13 +86,20 @@ class DiTreDiDraggable extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<DiTreDiDraggable> createState() => _DiTreDiDraggableState();
+  State<KDiTreDiDraggable> createState() => _KDiTreDiDraggableState();
 }
 
-class _DiTreDiDraggableState extends State<DiTreDiDraggable> {
+class _KDiTreDiDraggableState extends State<KDiTreDiDraggable> {
   var _lastX = 0.0;
   var _lastY = 0.0;
   var _scaleBase = 0.0;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    print('check KDiTreDi-KDiTreDiDraggable dispose');
+    super.dispose();
+  }
 
   //rotation X limit release
   double _calculateRotationX(double x, double dy) {

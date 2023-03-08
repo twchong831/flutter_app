@@ -28,7 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> listPcdFiles = [];
 
   bool checkedListUpdated = false;
-  bool checkedViewrTimerUpdateFunc = false;
 
   DiTreDiController? _beforeViewConfig;
 
@@ -234,11 +233,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       onPressed: checkedListUpdated
                           ? () async {
-                              checkedViewrTimerUpdateFunc = false;
-                              _beforeViewConfig = await Get.to(ViewScreen(
-                                pcdList: [selPcdFile],
-                                ditreControl: _beforeViewConfig,
-                              ));
+                              _beforeViewConfig = await Get.to(
+                                () => ViewScreen(
+                                  pcdList: [selPcdFile],
+                                  ditreControl: _beforeViewConfig,
+                                ),
+                              );
                             }
                           : null,
                       child: FittedBox(
@@ -276,11 +276,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         onPressed: checkedListUpdated
                             ? () async {
-                                checkedViewrTimerUpdateFunc = true;
-                                _beforeViewConfig = await Get.to(ViewScreen(
-                                  pcdList: listPcdFiles,
-                                  ditreControl: _beforeViewConfig,
-                                ));
+                                _beforeViewConfig = await Get.to(
+                                  () => ViewScreen(
+                                    pcdList: listPcdFiles,
+                                    ditreControl: _beforeViewConfig,
+                                  ),
+                                );
                               }
                             : null,
                         icon: const Icon(

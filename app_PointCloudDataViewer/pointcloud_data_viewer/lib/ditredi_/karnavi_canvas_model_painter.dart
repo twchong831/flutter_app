@@ -63,10 +63,6 @@ class KanaviCanvasModelPainter extends CustomPainter implements PaintViewPort {
     }
   }
 
-  DiTreDiController getBeforeViewPoint() {
-    return _controller;
-  }
-
   /////////////////////////
   // paint cache values
   /////////////////////////

@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pointcloud_data_viewer/ditredi_/kanavi_ditredi_stateful.dart';
+import 'package:pointcloud_data_viewer/ditredi_/kanavi_ditredi.dart';
 import 'package:pointcloud_data_viewer/ditredi_/model/gird_3d.dart';
 import 'package:pointcloud_data_viewer/ditredi_/model/guid_axis_3d.dart';
 import 'package:pointcloud_data_viewer/ditredi_/model/point_cloud_3d.dart';
@@ -43,9 +43,7 @@ class ViewScreen extends StatefulWidget {
 }
 
 class _ViewScreenState extends State<ViewScreen> {
-  late KanaviDiTreDiFul mViewer;
   // point cloud view config
-
   PCDReader pcdReader = PCDReader(path: '');
   late Timer mTimerPlay;
   bool checkedTimer = false;
@@ -70,7 +68,7 @@ class _ViewScreenState extends State<ViewScreen> {
   }
 
   void _playTimer(Timer time) async {
-    print("timer active");
+    // print("timer active");
     List<Point3D> pc = await pcdReader.read(widget.pcdList![gTimerCount]);
     _updatePointCloud(pc);
     gTimerCount++;
@@ -115,7 +113,7 @@ class _ViewScreenState extends State<ViewScreen> {
       } else {}
     } else {
       // printError('Please Resetting parameters');
-      print("re parameter");
+      // print("re parameter");
     }
 
     super.initState();
@@ -156,7 +154,7 @@ class _ViewScreenState extends State<ViewScreen> {
     required figure,
     required controller,
   }) {
-    return mViewer = KanaviDiTreDiFul(
+    return KDiTreDi(
       figures: figure,
       controller: controller,
     );
@@ -182,7 +180,7 @@ class _ViewScreenState extends State<ViewScreen> {
             direction: Axis.vertical,
             children: [
               Expanded(
-                child: DiTreDiDraggable(
+                child: KDiTreDiDraggable(
                   controller: widget._ditreControl,
                   rotationEnabled: true,
                   scaleEnabled: true,
