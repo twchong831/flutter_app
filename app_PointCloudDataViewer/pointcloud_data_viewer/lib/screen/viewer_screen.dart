@@ -2,14 +2,13 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:pointcloud_data_viewer/ditredi_/kanavi_ditredi.dart';
 import 'package:pointcloud_data_viewer/ditredi_/model/gird_3d.dart';
 import 'package:pointcloud_data_viewer/ditredi_/model/guid_axis_3d.dart';
 import 'package:pointcloud_data_viewer/ditredi_/model/point_cloud_3d.dart';
 import 'package:pointcloud_data_viewer/files/pcd_reader.dart';
 import 'package:vector_math/vector_math_64.dart';
-import 'package:flutter/src/material/colors.dart' as colorcode;
+import 'package:flutter/material.dart' as colorcode;
 
 enum ReadMode {
   udp,
@@ -52,38 +51,58 @@ class _ViewScreenState extends State<ViewScreen> {
   late final ReadMode? readMode;
   String selectFile = '';
 
-  List<Point3D> gPointCloud = [];
+  List<Point3D> gPcloudReadPCD = [];
+  List<Point3D> gPcloud = [Point3D(Vector3(0, 0, 0))];
 
-  void _updatePointCloud(List<Point3D> input) {
+  String testTitle = 'none';
+
+  late var objCloud = PointCloud3D(
+      [Point3D(Vector3(0, 0, 0))], Vector3(0, 0, 0),
+      pointWidth: 3);
+
+  List<Model3D<Model3D<dynamic>>> visualObjs = [
+    Point3D(Vector3(1, 1, 1), width: 5, color: colorcode.Colors.amber),
+  ];
+
+  void _updatePointCloud(List<Point3D> cloud) {
     if (mounted) {
       setState(() {
-        gPointCloud = input;
+        if (mounted) {
+          print('viewerScreen uupdatePointCloud setstate');
+          // gPcloud = cloud;
+          visualObjs = [
+            PointCloud3D(cloud, Vector3(0, 0, 0), pointWidth: 3),
+            Grid3D(const Point(10, 15), const Point(-10, 0), 1,
+                lineWidth: 1, color: colorcode.Colors.white.withOpacity(0.6)),
+            GuideAxis3D(1, lineWidth: 10),
+          ];
+        }
       });
     }
   }
 
   void _loadPcdFile(String path) async {
-    List<Point3D> pc = await pcdReader.read(path);
-    _updatePointCloud(pc);
+    gPcloudReadPCD = await pcdReader.read(path);
+    _updatePointCloud(gPcloudReadPCD);
   }
 
   void _playTimer(Timer time) async {
-    // print("timer active");
-    List<Point3D> pc = await pcdReader.read(widget.pcdList![gTimerCount]);
-    _updatePointCloud(pc);
-    gTimerCount++;
+    if (mounted) {
+      if (gPcloudReadPCD.isNotEmpty) gPcloudReadPCD.clear();
+      gPcloudReadPCD = await pcdReader.read(widget.pcdList![gTimerCount]);
+      _updatePointCloud(gPcloudReadPCD);
+      gTimerCount++;
 
-    if (gTimerCount > widget.pcdList!.length - 1) {
-      gTimerCount = 0;
+      if (gTimerCount > widget.pcdList!.length - 1) {
+        gTimerCount = 0;
+      }
     }
   }
 
   void _timerActive() {
-    print('timer active for play');
-
     if (!checkedTimer) {
       mTimerPlay = Timer.periodic(
-        const Duration(milliseconds: 30),
+        const Duration(milliseconds: 100),
         (timer) => _playTimer(timer),
       );
       checkedTimer = true;
@@ -92,7 +111,6 @@ class _ViewScreenState extends State<ViewScreen> {
 
   void _cancelTimer() {
     if (checkedTimer) {
-      print('timer cancel');
       mTimerPlay.cancel();
       checkedTimer = false;
     }
@@ -115,7 +133,6 @@ class _ViewScreenState extends State<ViewScreen> {
       // printError('Please Resetting parameters');
       // print("re parameter");
     }
-
     super.initState();
   }
 
@@ -125,39 +142,34 @@ class _ViewScreenState extends State<ViewScreen> {
     if (readMode == ReadMode.fileList) {
       _cancelTimer();
     }
-    // print('return val');
-    // Get.back(result: widget._ditreControl);
+
     super.dispose();
   }
 
   String setTitle() {
-    String val;
+    String val = 'none';
 
-    if (readMode == ReadMode.udp) {
-      val = 'UDP [${widget.ip}/${widget.port}]';
-    } else if (readMode == ReadMode.fileList) {
-      if (widget.pcdList?.length == 1) {
-        List sp = selectFile.split('/');
-        val = 'File [ ${sp[sp.length - 1]} ]';
-      } else {
-        val = 'File [Count : $gTimerCount/${widget.pcdList?.length}]';
+    setState(() {
+      if (mounted) {
+        if (readMode == ReadMode.udp) {
+          val = 'UDP [${widget.ip}/${widget.port}]';
+        } else {
+          if (readMode == ReadMode.fileList) {
+            if (widget.pcdList?.length == 1) {
+              List sp = selectFile.split('/');
+              val = 'File [ ${sp[sp.length - 1]} ]';
+            } else {
+              val = 'File [Count : $gTimerCount/${widget.pcdList?.length}]';
+              // val = 'File Playing';
+            }
+          } else {
+            val = 'none';
+          }
+        }
       }
-    } else {
-      val = 'none';
-    }
+    });
 
     return val;
-  }
-
-  _visualizer(
-    BuildContext contex, {
-    required figure,
-    required controller,
-  }) {
-    return KDiTreDi(
-      figures: figure,
-      controller: controller,
-    );
   }
 
   @override
@@ -168,12 +180,14 @@ class _ViewScreenState extends State<ViewScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Get.back(result: widget._ditreControl);
+            // Get.back(result: widget._ditreControl);
+            // Get.deleteAll(force: true);
+            Navigator.pop(context, widget._ditreControl);
           },
         ),
       ),
       body: Container(
-        color: const Color.fromARGB(255, 2, 2, 80), //set background
+        color: const Color.fromARGB(255, 3, 3, 29), //set background
         child: SafeArea(
           child: Flex(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,16 +198,8 @@ class _ViewScreenState extends State<ViewScreen> {
                   controller: widget._ditreControl,
                   rotationEnabled: true,
                   scaleEnabled: true,
-                  child: _visualizer(
-                    context,
-                    figure: [
-                      PointCloud3D(gPointCloud, Vector3(0, 0, 0),
-                          pointWidth: 3),
-                      Grid3D(const Point(10, 15), const Point(-10, 0), 1,
-                          lineWidth: 1,
-                          color: colorcode.Colors.white.withOpacity(0.6)),
-                      GuideAxis3D(1, lineWidth: 10),
-                    ],
+                  child: KDiTreDi(
+                    figures: visualObjs,
                     controller: widget._ditreControl,
                   ),
                 ),

@@ -11,7 +11,7 @@ import 'package:vector_math/vector_math_64.dart';
 
 /// Draws a [DiTreDi] data on a [Canvas].
 /// Shouldn't be used directly, use [DiTreDi] instead.
-class KanaviCanvasModelPainter extends CustomPainter implements PaintViewPort {
+class KModelPainter extends CustomPainter implements PaintViewPort {
   static const _dimension = 2;
   static const _maxDepth = 5000.0;
 
@@ -19,7 +19,7 @@ class KanaviCanvasModelPainter extends CustomPainter implements PaintViewPort {
   final DiTreDiController _controller;
   Aabb3 _bounds = Aabb3();
 
-  final List<Model3D<dynamic>> _figures;
+  late List<Model3D<dynamic>> figures;
 
   var _viewPortWidth = 0.0;
   var _viewPortHeight = 0.0;
@@ -33,9 +33,9 @@ class KanaviCanvasModelPainter extends CustomPainter implements PaintViewPort {
   final Paint _vPaint = Paint()..isAntiAlias = true;
   final DiTreDiConfig _config;
 
-  /// Creates a [KanaviCanvasModelPainter].
-  KanaviCanvasModelPainter(
-    this._figures,
+  /// Creates a [KModelPainter].
+  KModelPainter(
+    this.figures,
     Aabb3? bounds,
     this._controller,
     this._config, {
@@ -47,9 +47,9 @@ class KanaviCanvasModelPainter extends CustomPainter implements PaintViewPort {
       _isDirty = true;
     });
 
-    _setupBounds(_figures, bounds);
+    _setupBounds(figures, bounds);
 
-    final verticesCount = _figures.fold(0, (int p, e) => p + e.verticesCount());
+    final verticesCount = figures.fold(0, (int p, e) => p + e.verticesCount());
     _verticesToDraw = Float32List(verticesCount * _dimension);
     _colorsToDraw = Int32List(verticesCount);
     _zIndex = Float32List(verticesCount ~/ 3);
@@ -66,10 +66,11 @@ class KanaviCanvasModelPainter extends CustomPainter implements PaintViewPort {
   /////////////////////////
   // paint cache values
   /////////////////////////
-  final _matrix = Matrix4.zero();
+  final matrix = Matrix4.zero();
 
   @override
   void paint(Canvas canvas, Size size) {
+    print('painter : paint');
     canvas.save();
 
     _viewPortWidth = size.width / 2;
@@ -92,11 +93,11 @@ class KanaviCanvasModelPainter extends CustomPainter implements PaintViewPort {
     dz = _bounds.center.z;
     scale = _controller.scale;
 
-    _matrix.setIdentity();
+    matrix.setIdentity();
 
-    if (_config.perspective) _matrix.setEntry(3, 2, -0.001);
+    if (_config.perspective) matrix.setEntry(3, 2, -0.001);
 
-    _matrix
+    matrix
       ..translate(_controller.translation.dx, _controller.translation.dy, 0)
       ..translate(-dx * scale, dy * scale, dz * scale)
       ..scale(scale, -scale, -scale)
@@ -107,14 +108,14 @@ class KanaviCanvasModelPainter extends CustomPainter implements PaintViewPort {
       ..translate(-dx, -dy, -dz);
 
     var vertexIndex = 0;
-    for (var i = 0; i < _figures.length; i++) {
-      final figure = _figures[i];
+    for (var i = 0; i < figures.length; i++) {
+      final figure = figures[i];
       figure.paint(
         _config,
         _controller,
         this,
         figure,
-        _matrix,
+        matrix,
         vertexIndex,
         _zIndex,
         _colorsToDraw,
@@ -244,5 +245,5 @@ class KanaviCanvasModelPainter extends CustomPainter implements PaintViewPort {
   }
 
   @override
-  bool shouldRepaint(KanaviCanvasModelPainter oldDelegate) => _isDirty;
+  bool shouldRepaint(KModelPainter oldDelegate) => _isDirty;
 }

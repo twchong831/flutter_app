@@ -34,6 +34,8 @@ class KDiTreDi extends StatelessWidget {
   /// The controller to controll the camera.
   final DiTreDiController controller;
 
+  final KModelPainter mPainter;
+
   /// Creates a [DiTreDi] widget.
   KDiTreDi({
     Key? key,
@@ -41,21 +43,20 @@ class KDiTreDi extends StatelessWidget {
     DiTreDiController? controller,
     this.config = const DiTreDiConfig(),
     this.bounds,
+    KModelPainter? painter,
   })  : controller = controller ?? DiTreDiController(),
+        mPainter =
+            painter ?? KModelPainter(figures, bounds, controller!, config),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print('KDiTreDi build...');
     return ClipRect(
       child: CustomPaint(
         size: Size.infinite,
         // painter: CanvasModelPainter(
-        painter: KanaviCanvasModelPainter(
-          figures,
-          bounds,
-          controller,
-          config,
-        ),
+        painter: mPainter,
       ),
     );
   }
@@ -95,6 +96,13 @@ class _KDiTreDiDraggableState extends State<KDiTreDiDraggable> {
   var _scaleBase = 0.0;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    print('check KDiTreDi-KDiTreDiDraggable init');
+    super.initState();
+  }
+
+  @override
   void dispose() {
     // TODO: implement dispose
     print('check KDiTreDi-KDiTreDiDraggable dispose');
@@ -108,6 +116,8 @@ class _KDiTreDiDraggableState extends State<KDiTreDiDraggable> {
 
   @override
   Widget build(BuildContext context) {
+    print('check KDiTreDi-KDiTreDiDraggable build');
+
     return Listener(
       onPointerSignal: (pointerSignal) {
         if (widget.scaleEnabled && pointerSignal is PointerScrollEvent) {
@@ -137,7 +147,8 @@ class _KDiTreDiDraggableState extends State<KDiTreDiDraggable> {
             userScale: _scaleBase * data.scale,
             rotationX: widget.rotationEnabled
                 // ? (controller.rotationX - dy / 2).clamp(-90, -20)
-                ? _calculateRotationX(controller.rotationX, dy)
+                // ? _calculateRotationX(controller.rotationX, dy)
+                ? (controller.rotationX - dy / 2)
                 : null,
             rotationY: widget.rotationEnabled
                 ? ((controller.rotationY - dx / 2 + 360) % 360).clamp(0, 360)

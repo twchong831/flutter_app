@@ -41,14 +41,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.17.0"
-  cross_scroll:
-    dependency: "direct main"
-    description:
-      name: cross_scroll
-      sha256: "321acde7bc3b1803c2bfed72f28112d1acf56c74aad63c5ac6c725d495dcacc8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.75"
   cupertino_icons:
     dependency: "direct main"
     description:

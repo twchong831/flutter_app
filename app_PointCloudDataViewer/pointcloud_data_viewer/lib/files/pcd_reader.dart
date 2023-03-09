@@ -36,6 +36,8 @@ class PCDReader {
       '/Users/twchong/workspace/myGithub/flutter_app/app_PointCloudDataViewer/pointcloud_data_viewer/pcd';
   FileSystem mFiles = FileSystem();
 
+  List<String> gDumStr = [];
+
   PCDReader({
     required this.path,
   });
@@ -184,7 +186,7 @@ class PCDReader {
   }
 
   Future<List<Point3D>> read(String filename) async {
-    List<String> gStringStr = [];
+    // List<String> gStringStr = [];
     // gStringStr.clear();
 
     // path parse
@@ -196,22 +198,22 @@ class PCDReader {
         path += sp1[i] + '/';
       }
       mFiles.setLocalPath(path.substring(0, path.length - 1));
-      gStringStr = await _readFromFile(file: sp1[sp1.length - 1]);
+      gDumStr = await _readFromFile(file: sp1[sp1.length - 1]);
       // print(filename);
     } else {
       setBasePath();
-      gStringStr = await _readFromFile(
+      gDumStr = await _readFromFile(
         file: filename,
       );
     }
 
-    if (gStringStr.isNotEmpty) {
+    if (gDumStr.isNotEmpty) {
       // check point type
-      PCDField field = checkField(gStringStr);
-      int size = checkNumOfPoints(gStringStr);
+      PCDField field = checkField(gDumStr);
+      int size = checkNumOfPoints(gDumStr);
       // print('point size $size');
       if (gPointCloud.isNotEmpty) gPointCloud.clear();
-      gPointCloud = parsePointCloud(list: gStringStr, field: field);
+      gPointCloud = parsePointCloud(list: gDumStr, field: field);
     }
     return gPointCloud;
   }

@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:ditredi/ditredi.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:pointcloud_data_viewer/files/pcd_reader.dart';
 import 'package:pointcloud_data_viewer/screen/viewer_screen.dart';
 
@@ -21,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // FileSystem pcdFiles = FileSystem();
   PCDReader pcdReader = PCDReader(path: '');
   List<DropdownMenuItem<String>> pcdFileList = [];
-  String selPcdFile = '';
+  String selPcdFile = 'NONE';
   List<Point3D> pointCloud = [];
 
   String strNone = "NONE";
@@ -31,9 +30,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   DiTreDiController? _beforeViewConfig;
 
+  List<DropdownMenuItem<String>> dropDownList = [
+    const DropdownMenuItem(
+      value: 'NONE',
+      child: Text('NONE'),
+    )
+  ];
+
   // generate dropdownMenuItem
   List<DropdownMenuItem<String>> generateFileListMenu(List<String> list) {
-    // print('load generate menu Item');
+    print('load generate menu Item');
     bool checked = false;
     late List<DropdownMenuItem<String>> l = [];
 
@@ -69,11 +75,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return l;
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // getx controller set
-    // Get.put(HomeController());
     return Scaffold(
       appBar: AppBar(
         title: const Text("Point Cloud Data File Visualizer"),
@@ -102,42 +112,42 @@ class _HomeScreenState extends State<HomeScreen> {
                   } else {
                     Directory dir = Directory(selectedDirectory);
                     List listFiles = dir.listSync();
-                    setState(
-                      () {
-                        for (var i in listFiles) {
-                          String sub = i
-                              .toString()
-                              .substring(7, i.toString().length - 1);
-                          List sp = sub.split('.');
-                          if (sp.length > 1) {
-                            if (sp[sp.length - 1] == 'pcd') {
-                              listPcdFiles.add(sub);
+                    for (var i in listFiles) {
+                      String sub =
+                          i.toString().substring(7, i.toString().length - 1);
+                      List sp = sub.split('.');
+                      if (sp.length > 1) {
+                        if (sp[sp.length - 1] == 'pcd') {
+                          listPcdFiles.add(sub);
+                        }
+                      }
+                    }
+
+                    if (listPcdFiles.length > 1) {
+                      checkedListUpdated = true;
+                      listPcdFiles.sort(
+                        (a, b) {
+                          if (a.contains('(') && a.contains(')')) {
+                            List<String> la = a.split(RegExp(r'[(-)]'));
+                            List<String> lb = b.split(RegExp(r'[(-)]'));
+
+                            if (int.parse(la[1]) > int.parse(lb[1])) {
+                              return 1;
+                            } else {
+                              return -1;
                             }
                           }
-                        }
-
-                        if (listPcdFiles.length > 1) {
-                          checkedListUpdated = true;
-                          listPcdFiles.sort(
-                            (a, b) {
-                              if (a.contains('(') && a.contains(')')) {
-                                List<String> la = a.split(RegExp(r'[(-)]'));
-                                List<String> lb = b.split(RegExp(r'[(-)]'));
-
-                                if (int.parse(la[1]) > int.parse(lb[1])) {
-                                  return 1;
-                                } else {
-                                  return -1;
-                                }
-                              }
-                              return -1;
-                            },
-                          );
-                        } else {
-                          checkedListUpdated = false;
-                          listPcdFiles.add(strNone);
-                        }
-                        selPcdFile = listPcdFiles[0];
+                          return -1;
+                        },
+                      );
+                    } else {
+                      checkedListUpdated = false;
+                      listPcdFiles.add(strNone);
+                    }
+                    selPcdFile = listPcdFiles[0];
+                    setState(
+                      () {
+                        dropDownList = generateFileListMenu(listPcdFiles);
                       },
                     );
                   }
@@ -193,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: DropdownButton(
                 isExpanded: true,
-                items: generateFileListMenu(listPcdFiles),
+                items: dropDownList,
                 // icon: Ic,
                 onChanged: (dynamic value) {
                   setState(
@@ -233,10 +243,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       onPressed: checkedListUpdated
                           ? () async {
-                              _beforeViewConfig = await Get.to(
-                                () => ViewScreen(
-                                  pcdList: [selPcdFile],
-                                  ditreControl: _beforeViewConfig,
+                              _beforeViewConfig = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ViewScreen(
+                                      pcdList: [selPcdFile],
+                                      ditreControl: _beforeViewConfig),
                                 ),
                               );
                             }
@@ -276,10 +288,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         onPressed: checkedListUpdated
                             ? () async {
-                                _beforeViewConfig = await Get.to(
-                                  () => ViewScreen(
-                                    pcdList: listPcdFiles,
-                                    ditreControl: _beforeViewConfig,
+                                // _beforeViewConfig = await Get.to(
+                                //   () => ViewScreen(
+                                //     pcdList: listPcdFiles,
+                                //     ditreControl: _beforeViewConfig,
+                                //   ),
+                                // );
+                                _beforeViewConfig = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ViewScreen(
+                                        pcdList: listPcdFiles,
+                                        ditreControl: _beforeViewConfig),
+                                    maintainState: false,
                                   ),
                                 );
                               }
