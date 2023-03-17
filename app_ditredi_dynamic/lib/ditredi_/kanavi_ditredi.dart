@@ -20,13 +20,12 @@ export 'package:ditredi/src/parser/obj_parser.dart';
 export 'package:ditredi/src/controller/ditredi_controller.dart';
 
 /// A widget that displays a 3D objects.
-class KDiTreDi extends StatelessWidget {
+class KDiTreDi extends StatefulWidget {
   /// List of [Model3D] to display.
   final List<Model3D> figures;
 
   /// Bounds of the 3D space.
   final Aabb3? bounds;
-  final Aabb3 sBounds = Aabb3();
 
   /// The [DitrediConfig] to use.
   final DiTreDiConfig config;
@@ -50,13 +49,20 @@ class KDiTreDi extends StatelessWidget {
         super(key: key);
 
   @override
+  State<KDiTreDi> createState() => _KDiTreDiState();
+}
+
+class _KDiTreDiState extends State<KDiTreDi> {
+  final Aabb3 sBounds = Aabb3();
+
+  @override
   Widget build(BuildContext context) {
     print('KDiTreDi build...');
     return ClipRect(
       child: CustomPaint(
         size: Size.infinite,
         // painter: CanvasModelPainter(
-        painter: mPainter,
+        painter: widget.mPainter,
       ),
     );
   }
@@ -94,6 +100,8 @@ class _KDiTreDiDraggableState extends State<KDiTreDiDraggable> {
   var _lastX = 0.0;
   var _lastY = 0.0;
   var _scaleBase = 0.0;
+
+  bool gCheckedDiposeState = false;
 
   @override
   void initState() {

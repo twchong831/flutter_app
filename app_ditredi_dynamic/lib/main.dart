@@ -1,4 +1,5 @@
 import 'package:app_ditredi_dynamic/screen/hoem_screen_second.dart';
+import 'package:app_ditredi_dynamic/screen/hoem_screen_second_ful.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
-      home: HomeSecond(),
+      home: const HomeSecondFUl(),
     );
   }
 }
