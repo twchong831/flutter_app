@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:app_ditredi_dynamic/ditredi_/kanavi_ditredi.dart';
 import 'package:app_ditredi_dynamic/ditredi_/karnavi_canvas_model_painter.dart';
+import 'package:app_ditredi_dynamic/td_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart';
 import 'package:flutter/material.dart' as colorcode;
@@ -25,7 +26,12 @@ class _HomeSecondFUlState extends State<HomeSecondFUl> {
 
   bool gButtonPressed = false;
 
+  final DiTreDiConfig gConfig = const DiTreDiConfig();
+  final Aabb3 gBounds = Aabb3.minMax(Vector3(0, 0, 0), Vector3(1, 1, 1));
+
   late List<Point3D> gPointcloud;
+
+  int timerTickCount = 0;
 
   List<Point3D> _generatePoints() {
     List<Point3D> lists = [];
@@ -83,10 +89,10 @@ class _HomeSecondFUlState extends State<HomeSecondFUl> {
     print('timer...${timer.tick}');
     gPointcloud = _generatePoints();
     print('update point cloud ${gPointcloud.length}');
-
     setState(() {
       print('update state');
-      gModelPainter!.figures = gPointcloud;
+      gModelPainter!.figures = gPointcloud; // how? check no memory increase!!
+      timerTickCount = timer.tick;
     });
   }
 
@@ -96,17 +102,18 @@ class _HomeSecondFUlState extends State<HomeSecondFUl> {
     super.initState();
     gPointcloud = _generatePoints();
     gModelPainter = KModelPainter(
-        gPointcloud,
-        Aabb3.minMax(Vector3(0, 0, 0), Vector3(1, 1, 1)),
-        _controller,
-        const DiTreDiConfig());
+      gPointcloud,
+      gBounds,
+      _controller,
+      gConfig,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DYnamic Test'),
+        title: Text('DYnamic Test $timerTickCount'),
       ),
       body: Container(
         color: const Color.fromARGB(255, 5, 5, 58),
@@ -120,14 +127,16 @@ class _HomeSecondFUlState extends State<HomeSecondFUl> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        gButtonPressed = !gButtonPressed;
-                        print('pressed $gButtonPressed');
+                        setState(() {
+                          gButtonPressed = !gButtonPressed;
+                          print('pressed $gButtonPressed');
 
-                        if (gButtonPressed) {
-                          timerInit();
-                        } else {
-                          if (gTimer!.isActive) gTimer!.cancel();
-                        }
+                          if (gButtonPressed) {
+                            timerInit();
+                          } else {
+                            if (gTimer!.isActive) gTimer!.cancel();
+                          }
+                        });
                       },
                       style: ButtonStyle(
                         overlayColor: MaterialStateProperty.resolveWith<Color>(
@@ -157,19 +166,11 @@ class _HomeSecondFUlState extends State<HomeSecondFUl> {
                 ),
               ),
               Expanded(
-                child: KDiTreDiDraggable(
+                child: TdWidget(
+                  // figures: gPointcloud,
+                  // bounds: Aabb3.minMax(Vector3(0, 0, 0), Vector3(1, 1, 1)),
                   controller: _controller,
-                  child: KDiTreDi(
-                    controller: _controller,
-                    // figures: [
-                    //       Point3D(Vector3(0, 0, 0),
-                    //           color: colorcode.Colors.red, width: 30),
-                    //     ] +
-                    //     gPointcloud,
-                    figures: gPointcloud,
-                    bounds: Aabb3.minMax(Vector3(0, 0, 0), Vector3(1, 1, 1)),
-                    painter: gModelPainter,
-                  ),
+                  mPainter: gModelPainter!,
                 ),
               ),
             ],

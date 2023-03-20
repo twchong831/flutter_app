@@ -30,7 +30,7 @@ class KModelPainter extends CustomPainter implements PaintViewPort {
   var _zIndex = Float32List(0);
   late PriorityQueue _priorityQueue;
 
-  final Paint _vPaint = Paint()..isAntiAlias = true;
+  final Paint _vPaint = Paint()..isAntiAlias = false;
   final DiTreDiConfig _config;
 
   /// Creates a [KModelPainter].
@@ -38,11 +38,13 @@ class KModelPainter extends CustomPainter implements PaintViewPort {
     this.figures,
     Aabb3? bounds,
     this._controller,
-    this._config, {
-    Vector3? rotationValue,
-    Vector3? centerValue,
-    double? scale,
-  }) : super(repaint: _controller) {
+    this._config,
+    // {
+    // Vector3? rotationValue,
+    // Vector3? centerValue,
+    // double? scale,
+    // }
+  ) : super(repaint: _controller) {
     _controller.addListener(() {
       _isDirty = true;
     });

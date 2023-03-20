@@ -53,7 +53,12 @@ class KDiTreDi extends StatefulWidget {
 }
 
 class _KDiTreDiState extends State<KDiTreDi> {
-  final Aabb3 sBounds = Aabb3();
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    print('KDiTreDi dispose');
+  }
 
   @override
   Widget build(BuildContext context) {
