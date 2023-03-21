@@ -122,6 +122,7 @@ class KModelPainter extends CustomPainter
     var vertexIndex = 0;
     for (var i = 0; i < figures.length; i++) {
       final figure = figures[i];
+      print('[$i] vertics count :${figure.verticesCount()}');
       figure.paint(
         _config,
         controller,
@@ -135,6 +136,7 @@ class KModelPainter extends CustomPainter
       );
       vertexIndex += figure.verticesCount();
     }
+    print('final vertexIndex = $vertexIndex');
 
     if (_config.supportZIndex) {
       _drawWithZIndex(canvas);
@@ -201,13 +203,13 @@ class KModelPainter extends CustomPainter
     // print('update Bounds');
     // ignore: prefer_conditional_assignment
     if (bounds == null) {
-      // final points =
-      //     figures.map((e) => e.toPoints()).flatten().map((e) => e.position);
-      // bounds = Aabb3.minMax(points.first, points.first);
-      // for (var p in points) {
-      //   bounds.hullPoint(p);
-      // }
-      bounds = Aabb3.minMax(Vector3(-10, 0, 0), Vector3(10, 15, 0));
+      final points =
+          figures.map((e) => e.toPoints()).flatten().map((e) => e.position);
+      bounds = Aabb3.minMax(points.first, points.first);
+      for (var p in points) {
+        bounds.hullPoint(p);
+      }
+      // bounds = Aabb3.minMax(Vector3(-10, 0, 0), Vector3(10, 15, 0));
       // set static start ViewPoint
     }
 

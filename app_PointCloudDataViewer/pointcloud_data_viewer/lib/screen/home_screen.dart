@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool checkedListUpdated = false;
 
-  DiTreDiController? _beforeViewConfig;
+  DiTreDiController? _beforeViewController;
 
   List<DropdownMenuItem<String>> dropDownList = [
     const DropdownMenuItem(
@@ -243,12 +243,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       onPressed: checkedListUpdated
                           ? () async {
-                              _beforeViewConfig = await Navigator.push(
+                              _beforeViewController = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ViewScreen(
                                       pcdList: [selPcdFile],
-                                      ditreControl: _beforeViewConfig),
+                                      ditreControl: _beforeViewController),
                                 ),
                               );
                             }
@@ -288,18 +288,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         onPressed: checkedListUpdated
                             ? () async {
-                                // _beforeViewConfig = await Get.to(
+                                // _beforeViewController = await Get.to(
                                 //   () => ViewScreen(
                                 //     pcdList: listPcdFiles,
-                                //     ditreControl: _beforeViewConfig,
+                                //     ditreControl: _beforeViewController,
                                 //   ),
                                 // );
-                                _beforeViewConfig = await Navigator.push(
+                                _beforeViewController = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => ViewScreen(
                                         pcdList: listPcdFiles,
-                                        ditreControl: _beforeViewConfig),
+                                        ditreControl: _beforeViewController),
                                     maintainState: false,
                                   ),
                                 );

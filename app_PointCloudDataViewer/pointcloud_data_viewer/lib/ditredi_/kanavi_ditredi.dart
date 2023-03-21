@@ -51,7 +51,6 @@ class KDiTreDi extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('KDiTreDi build...');
     return ClipRect(
       child: CustomPaint(
         size: Size.infinite,
@@ -97,14 +96,12 @@ class _KDiTreDiDraggableState extends State<KDiTreDiDraggable> {
 
   @override
   void initState() {
-    // TODO: implement initState
     print('check KDiTreDi-KDiTreDiDraggable init');
     super.initState();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     print('check KDiTreDi-KDiTreDiDraggable dispose');
     super.dispose();
   }
