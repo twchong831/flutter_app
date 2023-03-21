@@ -16,4 +16,4 @@ A new Flutter project for DiTreDi library using Dynamic
 | Num. of Update | 581    | 1.81GB |
 | Memory usage   | 1349   | 204MB  |
 
-<img src="./image/IncreaseMemory.png" width="30%" heigth="30%"> => <img src="./image/NotIncreaseMemory.png" width="30%" heigth="30%">
+<img src="./image/IncreaseMemory.png" width="40%" heigth="40%"> => <img src="./image/NotIncreaseMemory.png" width="40%" heigth="40%">
