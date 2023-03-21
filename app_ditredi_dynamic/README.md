@@ -1,16 +1,19 @@
 # app_ditredi_dynamic
 
-A new Flutter project.
+A new Flutter project for DiTreDi library using Dynamic
 
-## Getting Started
+## Lib
 
-This project is a starting point for a Flutter application.
+[DiTreDi](https://pub.dev/packages/ditredi)
 
-A few resources to get you started if this is your first Flutter project:
+## result
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- The app used DiTreDi library was increased memory usage when 3D dataset updated.
+- The CanvasModelPainter class in canvas_model_painter.dart causes memory increased when updating 3D dataset.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+|                | before | after  |
+|----------------|--------|--------|
+| Num. of Update | 581    | 1.81GB |
+| Memory usage   | 1349   | 204MB  |
+
+![before](./image/IncreaseMemory.png) ![after](./image/NotIncreaseMemory.png)
