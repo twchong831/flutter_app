@@ -50,6 +50,8 @@ class KDiTreDi extends StatefulWidget {
 
   @override
   State<KDiTreDi> createState() => _KDiTreDiState();
+
+  DiTreDiController getController() => controller;
 }
 
 class _KDiTreDiState extends State<KDiTreDi> {

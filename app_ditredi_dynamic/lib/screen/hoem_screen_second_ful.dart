@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:app_ditredi_dynamic/ditredi_/kanavi_ditredi.dart';
 import 'package:app_ditredi_dynamic/ditredi_/karnavi_canvas_model_painter.dart';
-import 'package:app_ditredi_dynamic/td_widget.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart';
 import 'package:flutter/material.dart' as colorcode;
@@ -42,24 +42,27 @@ class _HomeSecondFUlState extends State<HomeSecondFUl> {
     Color colors;
     int num = 10000;
 
+    bool colorChecked = false;
+
     if (gTimer != null) {
       if (gTimer!.tick.toInt() % 2 == 0) {
-        num = 5000;
+        num = 10000;
+        colorChecked = true;
       }
     } else {}
+
     for (var i = 0; i < num; i++) {
       x = Random().nextDouble();
       y = Random().nextDouble();
       z = Random().nextDouble();
-      if (((x * 100).toInt() + (y * 100).toInt() + (z * 100).toInt()) % 2 ==
-          0) {
-        colors = colorcode.Colors.green;
-      } else if (((x * 100).toInt() + (y * 100).toInt() + (z * 100).toInt()) %
-              3 ==
-          0) {
-        colors = colorcode.Colors.yellow;
+      if (i % 2 == 0) {
+        colors =
+            colorChecked ? colorcode.Colors.green : colorcode.Colors.blueGrey;
+      } else if (i % 3 == 0) {
+        colors =
+            colorChecked ? colorcode.Colors.yellow : colorcode.Colors.purple;
       } else {
-        colors = colorcode.Colors.white;
+        colors = colorChecked ? colorcode.Colors.white : colorcode.Colors.black;
       }
 
       lists.add(Point3D(
@@ -77,12 +80,11 @@ class _HomeSecondFUlState extends State<HomeSecondFUl> {
 
   void timerInit() {
     gTimer = Timer.periodic(
-      const Duration(milliseconds: 500),
+      const Duration(milliseconds: 100),
       (timer) {
         timerFunc(timer);
       },
     );
-    print('timer active');
   }
 
   void timerFunc(Timer timer) {
@@ -90,15 +92,13 @@ class _HomeSecondFUlState extends State<HomeSecondFUl> {
     gPointcloud = _generatePoints();
     print('update point cloud ${gPointcloud.length}');
     setState(() {
-      print('update state');
-      gModelPainter!.figures = gPointcloud; // how? check no memory increase!!
+      gModelPainter!.update(con: _controller, fig: gPointcloud);
       timerTickCount = timer.tick;
     });
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     gPointcloud = _generatePoints();
     gModelPainter = KModelPainter(
@@ -109,11 +109,16 @@ class _HomeSecondFUlState extends State<HomeSecondFUl> {
     );
   }
 
+  var lastX = 0.0;
+  var lastY = 0.0;
+  var scaleBase = 0.0;
+
   @override
   Widget build(BuildContext context) {
+    print('build homeScreen');
     return Scaffold(
       appBar: AppBar(
-        title: Text('DYnamic Test $timerTickCount'),
+        title: Text('DYnamic Test : tick Count [$timerTickCount]'),
       ),
       body: Container(
         color: const Color.fromARGB(255, 5, 5, 58),
@@ -166,11 +171,52 @@ class _HomeSecondFUlState extends State<HomeSecondFUl> {
                 ),
               ),
               Expanded(
-                child: TdWidget(
-                  // figures: gPointcloud,
-                  // bounds: Aabb3.minMax(Vector3(0, 0, 0), Vector3(1, 1, 1)),
-                  controller: _controller,
-                  mPainter: gModelPainter!,
+                child: Listener(
+                  onPointerSignal: (pointerSignal) {
+                    if (pointerSignal is PointerScrollEvent) {
+                      final scaledDy =
+                          pointerSignal.scrollDelta.dy / _controller.viewScale;
+                      _controller.update(
+                        userScale: _controller.userScale - scaledDy,
+                      );
+                      setState(() {
+                        gModelPainter!
+                            .update(con: _controller, fig: gPointcloud);
+                      });
+                    }
+                  },
+                  child: GestureDetector(
+                    onScaleStart: (data) {
+                      scaleBase = _controller.userScale;
+                      lastX = data.localFocalPoint.dx;
+                      lastY = data.localFocalPoint.dy;
+                    },
+                    onScaleUpdate: (data) {
+                      final dx = data.localFocalPoint.dx - lastX;
+                      final dy = data.localFocalPoint.dy - lastY;
+
+                      lastX = data.localFocalPoint.dx;
+                      lastY = data.localFocalPoint.dy;
+
+                      _controller.update(
+                        userScale: scaleBase * data.scale,
+                        rotationX: (_controller.rotationX - dy / 2),
+                        rotationY:
+                            ((_controller.rotationY - dx / 2 + 360) % 360)
+                                .clamp(0, 360),
+                      );
+                      setState(() {
+                        gModelPainter!
+                            .update(con: _controller, fig: gPointcloud);
+                      });
+                    },
+                    child: ClipRect(
+                      child: CustomPaint(
+                        size: Size.infinite,
+                        painter: gModelPainter,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],

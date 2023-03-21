@@ -16,7 +16,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
-      home: const HomeSecondFUl(),
+      // home: const HomeScreen(), // increase memory when dynamic Update
+      home: const HomeSecondFUl(), // not Increase memory when dynamic Update.
     );
   }
 }

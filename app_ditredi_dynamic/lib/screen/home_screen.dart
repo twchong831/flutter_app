@@ -37,10 +37,11 @@ class _HomeScreenState extends State<HomeScreen> {
     gPointcloud = [];
   }
 
+  int timerTickCount = 0;
   //timer
   late Timer gTimer;
   void initTimer() {
-    gTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    gTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
       updateForTimer(timer);
     });
     // setState(() {});
@@ -53,19 +54,29 @@ class _HomeScreenState extends State<HomeScreen> {
     double y;
     double z;
     Color colors;
-    for (var i = 0; i < 10000; i++) {
+    int num = 10000;
+
+    bool colorChecked = false;
+
+    if (gTimer != null) {
+      if (gTimer.tick.toInt() % 2 == 0) {
+        num = 10000;
+        colorChecked = true;
+      }
+    } else {}
+
+    for (var i = 0; i < num; i++) {
       x = Random().nextDouble();
       y = Random().nextDouble();
       z = Random().nextDouble();
-      if (((x * 100).toInt() + (y * 100).toInt() + (z * 100).toInt()) % 2 ==
-          0) {
-        colors = colorcode.Colors.green;
-      } else if (((x * 100).toInt() + (y * 100).toInt() + (z * 100).toInt()) %
-              3 ==
-          0) {
-        colors = colorcode.Colors.yellow;
+      if (i % 2 == 0) {
+        colors =
+            colorChecked ? colorcode.Colors.green : colorcode.Colors.blueGrey;
+      } else if (i % 3 == 0) {
+        colors =
+            colorChecked ? colorcode.Colors.yellow : colorcode.Colors.purple;
       } else {
-        colors = colorcode.Colors.white;
+        colors = colorChecked ? colorcode.Colors.white : colorcode.Colors.black;
       }
 
       lists.add(Point3D(
@@ -82,14 +93,16 @@ class _HomeScreenState extends State<HomeScreen> {
     // if (gPointcloud.isNotEmpty) gPointcloud.clear();
     gPointcloud = _generatePoints();
     print('check size : ${gPointcloud.length}');
-    setState(() {});
+    setState(() {
+      timerTickCount = timer.tick;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DYnamic Test'),
+        title: Text('DYnamic Test : tick Count [$timerTickCount]'),
       ),
       body: Container(
         color: const Color.fromARGB(255, 5, 5, 58),

@@ -11,12 +11,14 @@ import 'package:vector_math/vector_math_64.dart';
 
 /// Draws a [DiTreDi] data on a [Canvas].
 /// Shouldn't be used directly, use [DiTreDi] instead.
-class KModelPainter extends CustomPainter implements PaintViewPort {
+class KModelPainter extends CustomPainter
+    with ChangeNotifier
+    implements PaintViewPort {
   static const _dimension = 2;
   static const _maxDepth = 5000.0;
 
   var _isDirty = true;
-  final DiTreDiController _controller;
+  DiTreDiController controller;
   Aabb3 _bounds = Aabb3();
 
   late List<Model3D<dynamic>> figures;
@@ -37,13 +39,13 @@ class KModelPainter extends CustomPainter implements PaintViewPort {
   KModelPainter(
     this.figures,
     Aabb3? bounds,
-    this._controller,
+    this.controller,
     this._config, {
     Vector3? rotationValue,
     Vector3? centerValue,
     double? scale,
-  }) : super(repaint: _controller) {
-    _controller.addListener(() {
+  }) : super(repaint: controller) {
+    controller.addListener(() {
       _isDirty = true;
     });
 
@@ -63,6 +65,17 @@ class KModelPainter extends CustomPainter implements PaintViewPort {
     }
   }
 
+  void update({
+    List<Model3D<dynamic>>? fig,
+    DiTreDiController? con,
+  }) {
+    print('modelPainter update Event.');
+    figures = fig ?? figures;
+    controller = con ?? controller;
+
+    notifyListeners();
+  }
+
   /////////////////////////
   // paint cache values
   /////////////////////////
@@ -78,27 +91,27 @@ class KModelPainter extends CustomPainter implements PaintViewPort {
 
     canvas.translate(_viewPortWidth, _viewPortHeight);
 
-    _controller.viewScale = math.min(_viewPortWidth, _viewPortHeight);
+    controller.viewScale = math.min(_viewPortWidth, _viewPortHeight);
     _isDirty = false;
 
     final double rotationX, rotationY, rotationZ;
     final double dx, dy, dz;
     final double scale;
 
-    rotationX = _degreeToRadians(_controller.rotationX);
-    rotationY = _degreeToRadians(_controller.rotationY);
-    rotationZ = _degreeToRadians(_controller.rotationZ);
+    rotationX = _degreeToRadians(controller.rotationX);
+    rotationY = _degreeToRadians(controller.rotationY);
+    rotationZ = _degreeToRadians(controller.rotationZ);
     dx = _bounds.center.x;
     dy = _bounds.center.y;
     dz = _bounds.center.z;
-    scale = _controller.scale;
+    scale = controller.scale;
 
     matrix.setIdentity();
 
     if (_config.perspective) matrix.setEntry(3, 2, -0.001);
 
     matrix
-      ..translate(_controller.translation.dx, _controller.translation.dy, 0)
+      ..translate(controller.translation.dx, controller.translation.dy, 0)
       ..translate(-dx * scale, dy * scale, dz * scale)
       ..scale(scale, -scale, -scale)
       ..translate(dx, dy, dz)
@@ -112,7 +125,7 @@ class KModelPainter extends CustomPainter implements PaintViewPort {
       final figure = figures[i];
       figure.paint(
         _config,
-        _controller,
+        controller,
         this,
         figure,
         matrix,
@@ -202,7 +215,7 @@ class KModelPainter extends CustomPainter implements PaintViewPort {
     double spreadX = bounds.max.x - bounds.min.x;
     double spreadY = bounds.max.y - bounds.min.y;
     double spreadZ = bounds.max.z - bounds.min.z;
-    _controller.modelScale = 1 / max(spreadX, max(spreadY, spreadZ));
+    controller.modelScale = 1 / max(spreadX, max(spreadY, spreadZ));
 
     _bounds = bounds;
   }
