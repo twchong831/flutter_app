@@ -38,13 +38,11 @@ class KModelPainter extends CustomPainter implements PaintViewPort {
     this.figures,
     Aabb3? bounds,
     this._controller,
-    this._config,
-    // {
-    // Vector3? rotationValue,
-    // Vector3? centerValue,
-    // double? scale,
-    // }
-  ) : super(repaint: _controller) {
+    this._config, {
+    Vector3? rotationValue,
+    Vector3? centerValue,
+    double? scale,
+  }) : super(repaint: _controller) {
     _controller.addListener(() {
       _isDirty = true;
     });

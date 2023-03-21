@@ -1,8 +1,6 @@
 import 'package:app_ditredi_dynamic/screen/hoem_screen_second_ful.dart';
 import 'package:flutter/material.dart';
 
-//this command write in test1 branch
-
 void main() {
   runApp(const MyApp());
 }
