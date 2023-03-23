@@ -72,6 +72,21 @@ class KModelPainter extends CustomPainter
     figures = fig ?? figures;
     controller = control ?? controller;
 
+    _setupBounds(figures, _bounds);
+
+    final verticesCount = figures.fold(0, (int p, e) => p + e.verticesCount());
+    _verticesToDraw = Float32List(verticesCount * _dimension);
+    _colorsToDraw = Int32List(verticesCount);
+    _zIndex = Float32List(verticesCount ~/ 3);
+
+    if (_config.supportZIndex) {
+      _verticesBuffer = Float32List(verticesCount * _dimension);
+      _colorsBuffer = Int32List(verticesCount);
+      _priorityQueue = PriorityQueue((a, b) {
+        return _zIndex[a].compareTo(_zIndex[b]);
+      });
+    }
+
     notifyListeners();
   }
 
@@ -82,7 +97,6 @@ class KModelPainter extends CustomPainter
 
   @override
   void paint(Canvas canvas, Size size) {
-    print('painter : paint');
     canvas.save();
 
     _viewPortWidth = size.width / 2;
@@ -122,7 +136,6 @@ class KModelPainter extends CustomPainter
     var vertexIndex = 0;
     for (var i = 0; i < figures.length; i++) {
       final figure = figures[i];
-      print('[$i] vertics count :${figure.verticesCount()}');
       figure.paint(
         _config,
         controller,
@@ -136,7 +149,6 @@ class KModelPainter extends CustomPainter
       );
       vertexIndex += figure.verticesCount();
     }
-    print('final vertexIndex = $vertexIndex');
 
     if (_config.supportZIndex) {
       _drawWithZIndex(canvas);
@@ -200,7 +212,6 @@ class KModelPainter extends CustomPainter
   void _setupBounds(List<Model3D<dynamic>> figures, Aabb3? bounds) {
     if (figures.isEmpty) return;
 
-    // print('update Bounds');
     // ignore: prefer_conditional_assignment
     if (bounds == null) {
       final points =

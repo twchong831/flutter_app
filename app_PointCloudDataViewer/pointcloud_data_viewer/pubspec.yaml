@@ -40,6 +40,8 @@ dependencies:
   path_provider: ^2.0.13
   file_picker: ^5.2.5
   get: ^4.6.5
+  easy_sidemenu: ^0.4.1+1
+
   # ditredi: 
     # path: ./lib/ditredi
 

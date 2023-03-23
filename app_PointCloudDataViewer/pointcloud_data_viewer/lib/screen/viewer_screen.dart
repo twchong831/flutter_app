@@ -46,53 +46,44 @@ class ViewScreen extends StatefulWidget {
 class _ViewScreenState extends State<ViewScreen> {
   // point cloud view config
   PCDReader pcdReader = PCDReader(path: '');
+  // selected PCD file name
+  String selectFile = '';
+
+  // timer for pcd files play
   late Timer mTimerPlay;
-  bool checkedTimer = false;
+  bool gCheckedTimer = false;
   int gTimerCount = 0;
 
   late final ReadMode? readMode;
-  String selectFile = '';
 
   List<Point3D> gPcloudReadPCD = [];
-  List<Point3D> gPcloud = [Point3D(Vector3(0, 0, 0))];
 
-  String testTitle = 'none';
-
+  // painter for 3D visualization using ditredi
   KModelPainter? gModelPainter;
 
+  // set viewPoint Start
   final Aabb3 gBounds = Aabb3.minMax(Vector3(-10, 0, 0), Vector3(10, 15, 0));
 
-  late var objCloud = PointCloud3D(
-      [Point3D(Vector3(0, 0, 0))], Vector3(0, 0, 0),
-      pointWidth: 3);
-
+  // visualize target using ditredi
   List<Model3D<Model3D<dynamic>>> visualObjs = [
     Grid3D(const Point(10, 15), const Point(-10, 0), 1,
         lineWidth: 1, color: colorcode.Colors.white.withOpacity(0.6)),
     GuideAxis3D(1, lineWidth: 10),
-    Point3D(Vector3(1, 1, 1), width: 5, color: colorcode.Colors.amber),
   ];
 
-  // update point cloud using timer
+  // update point cloud
   void _updatePointCloud(List<Point3D> cloud) {
     if (mounted) {
-      print('viewerScreen uupdatePointCloud setstate');
       // gPcloud = cloud;
-      print('update point cloud size : ${cloud.length}');
       visualObjs.clear();
       visualObjs = [
         Grid3D(const Point(10, 15), const Point(-10, 0), 1,
             lineWidth: 1, color: colorcode.Colors.white.withOpacity(0.6)),
         GuideAxis3D(1, lineWidth: 10),
-        // PointCloud3D(cloud, Vector3(0, 0, 0), pointWidth: 3),
-        // Point3D(Vector3(1, 1, cloud.length / 1000),
-        // width: 5, color: colorcode.Colors.amber),
+        PointCloud3D(cloud, Vector3(0, 0, 0), pointWidth: 3),
       ];
-      // index 에러는 초기 paint의 figure 크기가 1이었는데,
-      // 이후 커지기 때문....
 
       setState(() {
-        print('update Painter ${visualObjs.length}');
         gModelPainter!.update(control: widget._ditreControl, fig: visualObjs);
       });
     }
@@ -120,20 +111,20 @@ class _ViewScreenState extends State<ViewScreen> {
 
   // private : play timer and active this func.
   void _timerActive() {
-    if (!checkedTimer) {
+    if (!gCheckedTimer) {
       mTimerPlay = Timer.periodic(
-        const Duration(milliseconds: 100),
+        const Duration(milliseconds: 33),
         (timer) => _playTimer(timer),
       );
-      checkedTimer = true;
+      gCheckedTimer = true;
     }
   }
 
   // private : cancel timer
   void _cancelTimer() {
-    if (checkedTimer) {
+    if (gCheckedTimer) {
       mTimerPlay.cancel();
-      checkedTimer = false;
+      gCheckedTimer = false;
     }
   }
 
@@ -152,10 +143,8 @@ class _ViewScreenState extends State<ViewScreen> {
       } else {}
     } else {
       // printError('Please Resetting parameters');
-      // print("re parameter");
     }
     // init gModelPainter
-    print('init Painter ${visualObjs.length}');
     gModelPainter = KModelPainter(
       visualObjs,
       gBounds,
@@ -168,16 +157,14 @@ class _ViewScreenState extends State<ViewScreen> {
   // page dispose state FUNC[end].
   @override
   void dispose() {
-    // TODO: implement dispose
     if (readMode == ReadMode.fileList) {
       _cancelTimer();
     }
-
     super.dispose();
   }
 
   // set this page title
-  String setTitle() {
+  String _setTitle() {
     String val = 'none';
     setState(() {
       if (mounted) {
@@ -202,6 +189,9 @@ class _ViewScreenState extends State<ViewScreen> {
     return val;
   }
 
+  // for side menu
+  // List<SideMenuItem> items = [];
+
   // for 3D visualization
   var lastX = 0.0;
   var lastY = 0.0;
@@ -211,24 +201,24 @@ class _ViewScreenState extends State<ViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(setTitle()),
+        title: Text(_setTitle()),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            // Get.back(result: widget._ditreControl);
-            // Get.deleteAll(force: true);
+            // set navigator for backward and send DiTreDiController value
             Navigator.pop(context, widget._ditreControl);
           },
         ),
       ),
       body: Container(
-        color: const Color.fromARGB(255, 3, 3, 29), //set background
+        color: const Color.fromARGB(255, 3, 3, 29), //set background color
         child: SafeArea(
           child: Flex(
             crossAxisAlignment: CrossAxisAlignment.start,
             direction: Axis.vertical,
             children: [
               Expanded(
+                // get painter to DiTreDiDraggable and DiTreDi
                 child: Listener(
                   onPointerSignal: (pointerSignal) {
                     if (pointerSignal is PointerScrollEvent) {
@@ -238,6 +228,7 @@ class _ViewScreenState extends State<ViewScreen> {
                         userScale: widget._ditreControl.userScale - scaledDy,
                       );
                       setState(() {
+                        // update painter for scroll gesture
                         gModelPainter!.update(
                             control: widget._ditreControl, fig: visualObjs);
                       });
@@ -265,6 +256,7 @@ class _ViewScreenState extends State<ViewScreen> {
                                 .clamp(0, 360),
                       );
                       setState(() {
+                        // update painter for zoom gesture
                         gModelPainter!.update(
                             control: widget._ditreControl, fig: visualObjs);
                       });
@@ -283,6 +275,13 @@ class _ViewScreenState extends State<ViewScreen> {
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          print('floating button pushed...');
+        },
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
