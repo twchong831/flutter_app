@@ -207,9 +207,9 @@ class _ViewScreenState extends State<ViewScreen> {
   }
 
   // for side bar
-  final _controller = SidebarXController(
+  final _sideBarController = SidebarXController(
     selectedIndex: 0,
-    extended: true,
+    extended: false,
   );
 
   // for 3D visualization
@@ -236,27 +236,21 @@ class _ViewScreenState extends State<ViewScreen> {
 
     return Scaffold(
       key: _key,
-      appBar: AppBar(
-        title: Text(_setTitle()),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            // set navigator for backward and send DiTreDiController value
-            Navigator.pop(context, widget._ditreControl);
-          },
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(MediaQuery.of(context).size.height / 24),
+        child: AppBar(
+          title: Text(_setTitle()),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              // set navigator for backward and send DiTreDiController value
+              Navigator.pop(context, widget._ditreControl);
+            },
+          ),
         ),
-        actions: [
-          IconButton(
-              onPressed: () {
-                _key.currentState?.openDrawer();
-              },
-              icon: const Icon(
-                Icons.menu,
-              )),
-        ],
       ),
       drawer: ControlSideBar(
-        controller: _controller,
+        controller: _sideBarController,
         items: gSideBarItems,
       ),
       body: Container(
@@ -324,13 +318,16 @@ class _ViewScreenState extends State<ViewScreen> {
           ),
         ),
       ),
-      //   floatingActionButton: FloatingActionButton(
-      //     onPressed: () {
-      //       print('floating button pushed...');
-      //     },
-      //     child: const Icon(Icons.add),
-      //   ),
-      //   floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.small(
+        onPressed: () {
+          _key.currentState?.openDrawer();
+        },
+        // backgroundColor: Theme.of(context).colorScheme.,
+        child: const Icon(
+          Icons.add,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
     );
   }
 }

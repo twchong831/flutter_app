@@ -83,11 +83,9 @@ class _FileSelectScreenState extends State<FileSelectScreen> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // appBar: AppBar(
-      // title: const Text("Point Cloud Data File Visualizer"),
-      // ),
-      body: Center(
+    return Container(
+      color: Theme.of(context).colorScheme.onPrimary,
+      child: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

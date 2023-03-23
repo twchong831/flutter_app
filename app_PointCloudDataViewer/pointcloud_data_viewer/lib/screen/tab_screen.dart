@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tab_container/tab_container.dart';
 import 'package:pointcloud_data_viewer/screen/file_select_screen.dart';
+import 'package:tab_container/tab_container.dart';
 
 class TabScreen extends StatefulWidget {
   const TabScreen({super.key});
@@ -35,35 +35,21 @@ class _TabScreenState extends State<TabScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('tab'),
+        title: const Text('Point Cloud Data File Visualizer'),
       ),
-      body: SingleChildScrollView(
-        child: SizedBox(
-          height: 1800,
-          child: Column(
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: TabContainer(
-                    radius: 20,
-                    colors: const [
-                      Colors.red,
-                      Colors.yellow,
-                    ],
-                    tabs: const ['File Select', 'config'],
-                    children: [
-                      Container(
-                        child: const FileSelectScreen(),
-                      ),
-                      Container(
-                        child: const Text('page1'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+      body: SizedBox(
+        child: Expanded(
+          child: TabContainer(
+            radius: 10,
+            color: Theme.of(context).colorScheme.primary,
+            tabEdge: TabEdge.left,
+            tabStart: 0,
+            tabEnd: 0.3,
+            childPadding: const EdgeInsets.all(10),
+            tabs: const ['File Select', 'config'],
+            children: const [
+              FileSelectScreen(),
+              Text('Config page'),
             ],
           ),
         ),
