@@ -9,6 +9,8 @@ import 'package:pointcloud_data_viewer/ditredi_/model/gird_3d.dart';
 import 'package:pointcloud_data_viewer/ditredi_/model/guid_axis_3d.dart';
 import 'package:pointcloud_data_viewer/ditredi_/model/point_cloud_3d.dart';
 import 'package:pointcloud_data_viewer/files/pcd_reader.dart';
+import 'package:pointcloud_data_viewer/widget/sidebar.dart';
+import 'package:sidebarx/sidebarx.dart';
 import 'package:vector_math/vector_math_64.dart';
 import 'package:flutter/material.dart' as colorcode;
 
@@ -71,6 +73,8 @@ class _ViewScreenState extends State<ViewScreen> {
     GuideAxis3D(1, lineWidth: 10),
   ];
 
+  double gPointSize = 3.0;
+
   // update point cloud
   void _updatePointCloud(List<Point3D> cloud) {
     if (mounted) {
@@ -80,7 +84,7 @@ class _ViewScreenState extends State<ViewScreen> {
         Grid3D(const Point(10, 15), const Point(-10, 0), 1,
             lineWidth: 1, color: colorcode.Colors.white.withOpacity(0.6)),
         GuideAxis3D(1, lineWidth: 10),
-        PointCloud3D(cloud, Vector3(0, 0, 0), pointWidth: 3),
+        PointCloud3D(cloud, Vector3(0, 0, 0), pointWidth: gPointSize),
       ];
 
       setState(() {
@@ -189,17 +193,49 @@ class _ViewScreenState extends State<ViewScreen> {
     return val;
   }
 
-  // for side menu
-  // List<SideMenuItem> items = [];
+  void increasePointSize() {
+    gPointSize++;
+    _updatePointCloud(gPcloudReadPCD);
+  }
+
+  void decreasePointSize() {
+    gPointSize--;
+    if (gPointSize < 1.0) {
+      gPointSize = 1.0;
+    }
+    _updatePointCloud(gPcloudReadPCD);
+  }
+
+  // for side bar
+  final _controller = SidebarXController(
+    selectedIndex: 0,
+    extended: true,
+  );
 
   // for 3D visualization
   var lastX = 0.0;
   var lastY = 0.0;
   var scaleBase = 0.0;
 
+  final _key = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
+    List<SidebarXItem> gSideBarItems = [
+      SidebarXItem(
+        icon: Icons.add,
+        label: 'increase',
+        onTap: () => increasePointSize(),
+      ),
+      SidebarXItem(
+        icon: Icons.remove,
+        label: 'decrease',
+        onTap: () => decreasePointSize(),
+      ),
+    ];
+
     return Scaffold(
+      key: _key,
       appBar: AppBar(
         title: Text(_setTitle()),
         leading: IconButton(
@@ -209,6 +245,19 @@ class _ViewScreenState extends State<ViewScreen> {
             Navigator.pop(context, widget._ditreControl);
           },
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                _key.currentState?.openDrawer();
+              },
+              icon: const Icon(
+                Icons.menu,
+              )),
+        ],
+      ),
+      drawer: ControlSideBar(
+        controller: _controller,
+        items: gSideBarItems,
       ),
       body: Container(
         color: const Color.fromARGB(255, 3, 3, 29), //set background color
@@ -275,13 +324,13 @@ class _ViewScreenState extends State<ViewScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print('floating button pushed...');
-        },
-        child: const Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      //   floatingActionButton: FloatingActionButton(
+      //     onPressed: () {
+      //       print('floating button pushed...');
+      //     },
+      //     child: const Icon(Icons.add),
+      //   ),
+      //   floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

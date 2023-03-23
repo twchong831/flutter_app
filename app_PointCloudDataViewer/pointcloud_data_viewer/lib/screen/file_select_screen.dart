@@ -9,14 +9,14 @@ import 'package:pointcloud_data_viewer/screen/viewer_screen.dart';
 
 // class HomeController extends GetxController {}
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class FileSelectScreen extends StatefulWidget {
+  const FileSelectScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<FileSelectScreen> createState() => _FileSelectScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _FileSelectScreenState extends State<FileSelectScreen> {
   // FileSystem pcdFiles = FileSystem();
   PCDReader pcdReader = PCDReader(path: '');
   List<DropdownMenuItem<String>> pcdFileList = [];
@@ -77,7 +77,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -85,9 +84,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Point Cloud Data File Visualizer"),
-      ),
+      // appBar: AppBar(
+      // title: const Text("Point Cloud Data File Visualizer"),
+      // ),
       body: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -288,12 +287,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         onPressed: checkedListUpdated
                             ? () async {
-                                // _beforeViewController = await Get.to(
-                                //   () => ViewScreen(
-                                //     pcdList: listPcdFiles,
-                                //     ditreControl: _beforeViewController,
-                                //   ),
-                                // );
                                 _beforeViewController = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
