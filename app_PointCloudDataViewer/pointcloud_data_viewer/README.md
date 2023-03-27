@@ -30,16 +30,16 @@ A new Flutter project for Point Cloud Data Visualizer.
 
 #### Play PCD Files
 
-<img src="./image/visual_visual_play.gif" width="50%" heigth="50%">
+<img src="./image/visual_play.gif" width="50%" heigth="50%">
 
 ### Point Size
 
-<img src="./image/pointSize_change.gif" width="50%" heigth="50%"><img src="./image/3.%20visualize_2.png" width="50%" heigth="50%">
+<img src="./image/pointSize_change.gif" width="50%" heigth="50%">
 
 ### Change Viewer Configuration
 
 #### Grid & Point Size
 
-<img src="./image/grid.gif" width="50%" heigth="50%"><img src="./image/3.%20visualize_2.png" width="50%" heigth="50%">
+<img src="./image/grid.gif" width="50%" heigth="50%">
 
-<img src="./image/gird_point_size.gif" width="50%" heigth="50%"><img src="./image/3.%20visualize_2.png" width="50%" heigth="50%">
+<img src="./image/gird_point_size.gif" width="50%" heigth="50%">
