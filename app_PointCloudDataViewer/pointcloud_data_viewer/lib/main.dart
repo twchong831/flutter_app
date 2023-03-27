@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'PointCloud Data Viewer',
       theme: ThemeData(),
-      // home: const HomeScreen(),
+//      home: const HomeScreen(),
       home: const TabScreen(),
     );
   }

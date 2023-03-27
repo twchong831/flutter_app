@@ -4,13 +4,19 @@ import 'dart:io';
 import 'package:ditredi/ditredi.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:pointcloud_data_viewer/ditredi_/viewer_config_controller.dart';
 import 'package:pointcloud_data_viewer/files/pcd_reader.dart';
 import 'package:pointcloud_data_viewer/screen/viewer_screen.dart';
 
 // class HomeController extends GetxController {}
 
 class FileSelectScreen extends StatefulWidget {
-  const FileSelectScreen({super.key});
+  final ViewerConfigController vConfigController;
+
+  FileSelectScreen({
+    super.key,
+    ViewerConfigController? controller,
+  }) : vConfigController = controller ?? ViewerConfigController();
 
   @override
   State<FileSelectScreen> createState() => _FileSelectScreenState();
@@ -78,6 +84,10 @@ class _FileSelectScreenState extends State<FileSelectScreen> {
   @override
   void initState() {
     super.initState();
+    print('init File select screen');
+    print(widget.vConfigController.getGridRangeX);
+    print(widget.vConfigController.getGridRangeY);
+    print(widget.vConfigController.getPointSize);
   }
 
   // This widget is the root of your application.
@@ -244,8 +254,10 @@ class _FileSelectScreenState extends State<FileSelectScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ViewScreen(
-                                      pcdList: [selPcdFile],
-                                      ditreControl: _beforeViewController),
+                                    pcdList: [selPcdFile],
+                                    ditreControl: _beforeViewController,
+                                    viewerControl: widget.vConfigController,
+                                  ),
                                 ),
                               );
                             }
@@ -289,8 +301,10 @@ class _FileSelectScreenState extends State<FileSelectScreen> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => ViewScreen(
-                                        pcdList: listPcdFiles,
-                                        ditreControl: _beforeViewController),
+                                      pcdList: listPcdFiles,
+                                      ditreControl: _beforeViewController,
+                                      viewerControl: widget.vConfigController,
+                                    ),
                                     maintainState: false,
                                   ),
                                 );

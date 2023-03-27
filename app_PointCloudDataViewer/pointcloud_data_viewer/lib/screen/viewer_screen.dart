@@ -8,6 +8,7 @@ import 'package:pointcloud_data_viewer/ditredi_/karnavi_canvas_model_painter.dar
 import 'package:pointcloud_data_viewer/ditredi_/model/gird_3d.dart';
 import 'package:pointcloud_data_viewer/ditredi_/model/guid_axis_3d.dart';
 import 'package:pointcloud_data_viewer/ditredi_/model/point_cloud_3d.dart';
+import 'package:pointcloud_data_viewer/ditredi_/viewer_config_controller.dart';
 import 'package:pointcloud_data_viewer/files/pcd_reader.dart';
 import 'package:pointcloud_data_viewer/widget/sidebar.dart';
 import 'package:sidebarx/sidebarx.dart';
@@ -24,6 +25,7 @@ class ViewScreen extends StatefulWidget {
   final int? port;
   final List<String>? pcdList;
   final DiTreDiController _ditreControl;
+  final ViewerConfigController viewerControl;
 
   ViewScreen({
     super.key,
@@ -31,6 +33,7 @@ class ViewScreen extends StatefulWidget {
     this.port,
     this.pcdList,
     DiTreDiController? ditreControl,
+    required this.viewerControl,
   }) : _ditreControl = ditreControl ??
             DiTreDiController(
               rotationX: 0,
@@ -73,7 +76,7 @@ class _ViewScreenState extends State<ViewScreen> {
     GuideAxis3D(1, lineWidth: 10),
   ];
 
-  double gPointSize = 3.0;
+  double gPointSize = 1.0;
 
   // update point cloud
   void _updatePointCloud(List<Point3D> cloud) {
@@ -81,10 +84,21 @@ class _ViewScreenState extends State<ViewScreen> {
       // gPcloud = cloud;
       visualObjs.clear();
       visualObjs = [
-        Grid3D(const Point(10, 15), const Point(-10, 0), 1,
-            lineWidth: 1, color: colorcode.Colors.white.withOpacity(0.6)),
+        Grid3D(
+            Point(
+              widget.viewerControl.getGridRangeXEnd,
+              widget.viewerControl.getGridRangeYEnd,
+            ),
+            Point(
+              widget.viewerControl.getGridRangeXStart,
+              widget.viewerControl.getGridRangeYStart,
+            ),
+            1,
+            lineWidth: 1,
+            color: colorcode.Colors.white.withOpacity(0.6)),
         GuideAxis3D(1, lineWidth: 10),
-        PointCloud3D(cloud, Vector3(0, 0, 0), pointWidth: gPointSize),
+        PointCloud3D(cloud, Vector3(0, 0, 0),
+            pointWidth: widget.viewerControl.getPointSize),
       ];
 
       setState(() {
@@ -155,6 +169,8 @@ class _ViewScreenState extends State<ViewScreen> {
       widget._ditreControl,
       const DiTreDiConfig(),
     );
+
+    gPointSize = widget.viewerControl.getPointSize;
     super.initState();
   }
 
@@ -195,6 +211,7 @@ class _ViewScreenState extends State<ViewScreen> {
 
   void increasePointSize() {
     gPointSize++;
+    widget.viewerControl.updatePointSize(gPointSize);
     _updatePointCloud(gPcloudReadPCD);
   }
 
@@ -203,6 +220,7 @@ class _ViewScreenState extends State<ViewScreen> {
     if (gPointSize < 1.0) {
       gPointSize = 1.0;
     }
+    widget.viewerControl.updatePointSize(gPointSize);
     _updatePointCloud(gPcloudReadPCD);
   }
 

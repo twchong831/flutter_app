@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pointcloud_data_viewer/ditredi_/viewer_config_controller.dart';
 import 'package:pointcloud_data_viewer/screen/file_select_screen.dart';
 import 'package:pointcloud_data_viewer/screen/viewer_setting_screen.dart';
 import 'package:tab_container/tab_container.dart';
@@ -13,6 +14,8 @@ class TabScreen extends StatefulWidget {
 class _TabScreenState extends State<TabScreen> {
   late final TabContainerController _controller;
   late TextTheme textTheme;
+
+  ViewerConfigController vController = ViewerConfigController();
 
   List<Widget> _tabIcons(BuildContext context) => [
         const Icon(
@@ -43,10 +46,6 @@ class _TabScreenState extends State<TabScreen> {
     super.dispose();
   }
 
-  double gridMax = 20;
-  double gridMin = 0;
-  double pointSize = 1.0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,12 +64,13 @@ class _TabScreenState extends State<TabScreen> {
               childPadding: const EdgeInsets.all(10),
               tabs: _tabIcons(context),
               isStringTabs: false,
+              controller: _controller,
               children: [
-                const FileSelectScreen(),
+                FileSelectScreen(
+                  controller: vController,
+                ),
                 ViewerSetScreen(
-                  gridMax: gridMax,
-                  gridMin: gridMin,
-                  ptSize: pointSize,
+                  configController: vController,
                 ),
               ],
             ),
