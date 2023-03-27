@@ -44,7 +44,7 @@ class _ViewerSetScreenState extends State<ViewerSetScreen> {
                 width: 10,
               ),
               SizedBox(
-                width: 20,
+                width: 30,
                 child: Text('${updateController!.getGridRangeXStart.toInt()}'),
               ),
               Expanded(
@@ -61,7 +61,7 @@ class _ViewerSetScreenState extends State<ViewerSetScreen> {
                 ),
               ),
               SizedBox(
-                width: 20,
+                width: 30,
                 child: Text('${updateController!.getGridRangeXEnd.toInt()}'),
               ),
               const SizedBox(
@@ -77,8 +77,11 @@ class _ViewerSetScreenState extends State<ViewerSetScreen> {
                 width: 10,
               ),
               SizedBox(
-                width: 20,
-                child: Text('${updateController!.getGridRangeYStart.toInt()}'),
+                width: 30,
+                child: Text(
+                  '${updateController!.getGridRangeYStart.toInt()}',
+                  style: const TextStyle(),
+                ),
               ),
               Expanded(
                 child: RangeSlider(
@@ -95,7 +98,7 @@ class _ViewerSetScreenState extends State<ViewerSetScreen> {
                 ),
               ),
               SizedBox(
-                width: 20,
+                width: 30,
                 child: Text('${updateController!.getGridRangeYEnd.toInt()}'),
               ),
               const SizedBox(
@@ -105,18 +108,30 @@ class _ViewerSetScreenState extends State<ViewerSetScreen> {
           ),
           Text('Point Size : ${updateController!.getPointSize}'),
           // Text('${widget._pointSize}'),
-          Slider(
-            value: updateController!.getPointSize,
-            max: 5.0,
-            min: 1.0,
-            divisions: 4,
-            onChanged: (value) {
-              setState(() {
-                updateController!.updatePointSize(double.parse(
-                  value.toStringAsFixed(1),
-                ));
-              });
-            },
+          Row(
+            children: [
+              const SizedBox(
+                width: 40,
+              ),
+              Expanded(
+                child: Slider(
+                  value: updateController!.getPointSize,
+                  max: 5.0,
+                  min: 1.0,
+                  divisions: 4,
+                  onChanged: (value) {
+                    setState(() {
+                      updateController!.updatePointSize(double.parse(
+                        value.toStringAsFixed(1),
+                      ));
+                    });
+                  },
+                ),
+              ),
+              const SizedBox(
+                width: 40,
+              ),
+            ],
           )
         ],
       ),

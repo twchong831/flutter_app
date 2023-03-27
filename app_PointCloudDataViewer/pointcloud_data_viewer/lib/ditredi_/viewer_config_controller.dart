@@ -13,8 +13,8 @@ class ViewerConfigController extends ChangeNotifier {
         _gridRangeY = gridRangeY ?? const RangeValues(0, 20),
         _pointSize = pointSize ?? 1.0;
 
-  final RangeValues maxRangeX = const RangeValues(-50, 50);
-  final RangeValues maxRangeY = const RangeValues(0, 100);
+  final RangeValues maxRangeX = const RangeValues(-50.0, 50.0);
+  final RangeValues maxRangeY = const RangeValues(0, 100.0);
 
   void updateGridRangeX(RangeValues range) {
     _gridRangeX = range;

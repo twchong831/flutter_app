@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pointcloud_data_viewer/ditredi_/viewer_config_controller.dart';
+import 'package:pointcloud_data_viewer/file_select_sceen_config.dart';
 import 'package:pointcloud_data_viewer/screen/file_select_screen.dart';
 import 'package:pointcloud_data_viewer/screen/viewer_setting_screen.dart';
 import 'package:tab_container/tab_container.dart';
@@ -12,11 +13,15 @@ class TabScreen extends StatefulWidget {
 }
 
 class _TabScreenState extends State<TabScreen> {
+  // tabContainer controller
   late final TabContainerController _controller;
+
   late TextTheme textTheme;
 
+  // viewerConfiguration controller for gird size and point size
   ViewerConfigController vController = ViewerConfigController();
 
+  // tabContainer's Tab Icon set
   List<Widget> _tabIcons(BuildContext context) => [
         const Icon(
           Icons.folder,
@@ -27,6 +32,9 @@ class _TabScreenState extends State<TabScreen> {
           size: 40,
         ),
       ];
+
+  // set File select and file list
+  FileSelectConfig fileConfig = FileSelectConfig();
 
   @override
   void initState() {
@@ -68,6 +76,7 @@ class _TabScreenState extends State<TabScreen> {
               children: [
                 FileSelectScreen(
                   controller: vController,
+                  fileCofig: fileConfig,
                 ),
                 ViewerSetScreen(
                   configController: vController,

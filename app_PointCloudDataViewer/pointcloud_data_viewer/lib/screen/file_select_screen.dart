@@ -5,6 +5,7 @@ import 'package:ditredi/ditredi.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:pointcloud_data_viewer/ditredi_/viewer_config_controller.dart';
+import 'package:pointcloud_data_viewer/file_select_sceen_config.dart';
 import 'package:pointcloud_data_viewer/files/pcd_reader.dart';
 import 'package:pointcloud_data_viewer/screen/viewer_screen.dart';
 
@@ -12,10 +13,12 @@ import 'package:pointcloud_data_viewer/screen/viewer_screen.dart';
 
 class FileSelectScreen extends StatefulWidget {
   final ViewerConfigController vConfigController;
+  final FileSelectConfig? fileCofig;
 
   FileSelectScreen({
     super.key,
     ViewerConfigController? controller,
+    this.fileCofig,
   }) : vConfigController = controller ?? ViewerConfigController();
 
   @override
@@ -84,10 +87,14 @@ class _FileSelectScreenState extends State<FileSelectScreen> {
   @override
   void initState() {
     super.initState();
-    print('init File select screen');
-    print(widget.vConfigController.getGridRangeX);
-    print(widget.vConfigController.getGridRangeY);
-    print(widget.vConfigController.getPointSize);
+    setState(() {
+      if (widget.fileCofig!.getFileList.isNotEmpty) {
+        listPcdFiles = widget.fileCofig!.getFileList;
+        dropDownList = generateFileListMenu(listPcdFiles);
+        checkedListUpdated = true;
+        selPcdFile = widget.fileCofig!.getSelectedFile;
+      }
+    });
   }
 
   // This widget is the root of your application.
@@ -154,6 +161,7 @@ class _FileSelectScreenState extends State<FileSelectScreen> {
                     selPcdFile = listPcdFiles[0];
                     setState(
                       () {
+                        widget.fileCofig!.setFileLists(listPcdFiles);
                         dropDownList = generateFileListMenu(listPcdFiles);
                       },
                     );
@@ -216,6 +224,7 @@ class _FileSelectScreenState extends State<FileSelectScreen> {
                   setState(
                     () {
                       selPcdFile = value;
+                      widget.fileCofig!.setSelectFile(selPcdFile);
                       if (selPcdFile != strNone) {
                         checkedListUpdated = true;
                       } else {
