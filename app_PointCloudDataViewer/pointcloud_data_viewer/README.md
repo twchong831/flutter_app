@@ -13,10 +13,9 @@ A new Flutter project for Point Cloud Data Visualizer.
    1. [vector_math](https://pub.dev/packages/vector_math)
 2. [file_picker](https://pub.dev/packages/file_picker)
 3. [path_provider](https://pub.dev/packages/path_provider)
-4. [cross_scroll](https://pub.dev/packages/cross_scroll)
-5. [sidebarx](https://pub.dev/packages/sidebarx)
-6. [tab_container](https://pub.dev/packages/tab_container)
-7. [flutter_colorpicker](https://pub.dev/packages/flutter_colorpicker)
+4. [sidebarx](https://pub.dev/packages/sidebarx)
+5. [tab_container](https://pub.dev/packages/tab_container)
+6. [flutter_colorpicker](https://pub.dev/packages/flutter_colorpicker)
 
 ## result
 
