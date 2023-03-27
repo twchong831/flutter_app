@@ -92,7 +92,7 @@ class _FileSelectScreenState extends State<FileSelectScreen> {
         listPcdFiles = widget.fileCofig!.getFileList;
         dropDownList = generateFileListMenu(listPcdFiles);
         checkedListUpdated = true;
-        selPcdFile = widget.fileCofig!.getSelectedFile;
+        selPcdFile = listPcdFiles[0];
       }
     });
   }

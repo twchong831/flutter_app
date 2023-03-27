@@ -272,7 +272,7 @@ class _ViewScreenState extends State<ViewScreen> {
         items: gSideBarItems,
       ),
       body: Container(
-        color: const Color.fromARGB(255, 3, 3, 29), //set background color
+        color: widget.viewerControl.getBackgroundColor, //set background color
         child: SafeArea(
           child: Flex(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -340,7 +340,6 @@ class _ViewScreenState extends State<ViewScreen> {
         onPressed: () {
           _key.currentState?.openDrawer();
         },
-        // backgroundColor: Theme.of(context).colorScheme.,
         child: const Icon(
           Icons.add,
         ),

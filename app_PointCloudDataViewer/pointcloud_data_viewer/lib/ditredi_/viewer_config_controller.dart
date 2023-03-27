@@ -4,14 +4,18 @@ class ViewerConfigController extends ChangeNotifier {
   RangeValues _gridRangeX;
   RangeValues _gridRangeY;
   double _pointSize;
+  Color _backgroundColor;
 
   ViewerConfigController({
     RangeValues? gridRangeX,
     RangeValues? gridRangeY,
     double? pointSize,
+    Color? backgroundColor,
   })  : _gridRangeX = gridRangeX ?? const RangeValues(-10, 10),
         _gridRangeY = gridRangeY ?? const RangeValues(0, 20),
-        _pointSize = pointSize ?? 1.0;
+        _pointSize = pointSize ?? 1.0,
+        _backgroundColor =
+            backgroundColor ?? const Color.fromARGB(255, 3, 3, 29);
 
   final RangeValues maxRangeX = const RangeValues(-50.0, 50.0);
   final RangeValues maxRangeY = const RangeValues(0, 100.0);
@@ -46,6 +50,13 @@ class ViewerConfigController extends ChangeNotifier {
     _pointSize = size;
     if (_pointSize <= 0) _pointSize = 1.0;
     if (_pointSize >= 6) _pointSize = 5.0;
+
+    notifyListeners();
+  }
+
+  void updateBackgroundColor(Color color) {
+    _backgroundColor = color;
+    notifyListeners();
   }
 
   RangeValues get getGridRangeX => _gridRangeX;
@@ -66,4 +77,6 @@ class ViewerConfigController extends ChangeNotifier {
   int rangeYdivision() {
     return (maxRangeY.end - maxRangeY.start) ~/ 5;
   }
+
+  Color get getBackgroundColor => _backgroundColor;
 }

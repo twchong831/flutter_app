@@ -45,3 +45,7 @@ A new Flutter project for Point Cloud Data Visualizer.
 <img src="./image/grid.gif" width="50%" heigth="50%">
 
 <img src="./image/gird_point_size.gif" width="50%" heigth="50%">
+
+#### Background Color
+
+<img src="./image/backgroundColor.gif" width="50%" heigth="50%">
