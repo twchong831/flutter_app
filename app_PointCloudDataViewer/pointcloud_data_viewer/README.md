@@ -20,16 +20,26 @@ A new Flutter project for Point Cloud Data Visualizer.
 
 - in Mac OS
 
-## home
+### File Select
 
-<img src="./image/1.%20home_screen.png" width="50%" heigth="50%">
+<img src="./image/fileSelect.gif" width="50%" heigth="50%">
 
-## file select
+### Basic Visualization
 
-<img src="./image/2.%20select_file.png" width="50%" heigth="50%">
+<img src="./image/visual_basic.gif" width="50%" heigth="50%">
 
-## visualization
+#### Play PCD Files
 
-<img src="./image/3.%20visualize_1.png" width="50%" heigth="50%"><img src="./image/3.%20visualize_2.png" width="50%" heigth="50%">
+<img src="./image/visual_visual_play.gif" width="50%" heigth="50%">
 
-![gif](./image/Mar-07-2023%2017-25-28.gif)
+### Point Size
+
+<img src="./image/pointSize_change.gif" width="50%" heigth="50%"><img src="./image/3.%20visualize_2.png" width="50%" heigth="50%">
+
+### Change Viewer Configuration
+
+#### Grid & Point Size
+
+<img src="./image/grid.gif" width="50%" heigth="50%"><img src="./image/3.%20visualize_2.png" width="50%" heigth="50%">
+
+<img src="./image/gird_point_size.gif" width="50%" heigth="50%"><img src="./image/3.%20visualize_2.png" width="50%" heigth="50%">
