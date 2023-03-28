@@ -25,6 +25,7 @@ class _ViewerSetScreenState extends State<ViewerSetScreen> {
   void initState() {
     super.initState();
     updateController = widget.vConfigController;
+    _backgroundColor = updateController!.getBackgroundColor;
   }
 
   @override
