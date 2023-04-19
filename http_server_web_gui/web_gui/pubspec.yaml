@@ -1,0 +1,25 @@
+name: web_embedded
+description: A new Flutter project.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=2.18.0 <3.0.0'
+
+dependencies:
+  http: ^0.13.5
+  dio: ^5.1.1
+  flutter_toggle_tab: ^1.2.0
+  # buttons_tabbar: ^1.3.6
+  loading_animation_widget:
+  
+  flutter:
+    sdk: flutter
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
