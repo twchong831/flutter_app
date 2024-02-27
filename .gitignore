@@ -1,2 +1,8 @@
 .DS_Store
 *.pcd
+android/
+ios/
+linux/
+macos/
+web/
+windows/
