@@ -19,17 +19,16 @@ class ProductionDetailWidget extends StatelessWidget {
       list_.add(TableRow(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(5.0),
             child: Text(
               name[i],
               style: const TextStyle(
-                // fontStyle: FontStyle.,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(5.0),
             child: Text(value[i]),
           ),
         ],
@@ -39,18 +38,10 @@ class ProductionDetailWidget extends StatelessWidget {
     return list_;
   }
 
-  final GlobalKey key_ = GlobalKey();
-
-  Size? getWidgetSize() {
-    return key_.currentContext?.size;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Table(
-      key: key_,
       border: TableBorder.all(),
-      // defaultColumnWidth: FixedColumnWidth(30),
       children: _tableGenerator(),
       columnWidths: const {
         0: IntrinsicColumnWidth(),

@@ -1,6 +1,7 @@
 import 'package:ditredi/ditredi.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:object_3d/object_3d.dart';
+import 'package:flutter/widgets.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 import 'package:web_prodution_page/production_detail.dart';
 
@@ -52,7 +53,7 @@ class _ProductionPageState extends State<ProductionPage> {
       background_: Colors.grey,
     );
 
-    print('check size ${tableWidget.getWidgetSize()}');
+    // print('check size ${tableWidget.}');
   }
 
   Iterable<Cube3D> _generateCubes() sync* {
@@ -87,6 +88,8 @@ class _ProductionPageState extends State<ProductionPage> {
 
   @override
   Widget build(BuildContext context) {
+    // print('check size2 ${tableWidget.getWidgetSize()}');
+
     final cubes_ = _generateCubes();
     final controller_ = DiTreDiController(
       rotationX: -20,
@@ -102,40 +105,52 @@ class _ProductionPageState extends State<ProductionPage> {
         Column(
           children: [
             const SizedBox(
-              height: 30,
+              height: 50,
             ),
             Container(
+              width: 200,
+              height: 300,
               color: Colors.grey,
-              child: SizedBox(
-                height: 350,
-                width: 200,
-                child: DiTreDiDraggable(
+              child: DiTreDiDraggable(
+                controller: controller_,
+                child: DiTreDi(
+                  figures: cubes_.toList(),
                   controller: controller_,
-                  child: DiTreDi(
-                    figures: cubes_.toList(),
-                    controller: controller_,
-                  ),
                 ),
               ),
             ),
           ],
         ),
         const SizedBox(
-          width: 20,
+          width: 10,
         ),
         Column(
           children: [
-            SizedBox(
-              // width: tableWidget.getWidgetSize()!.width,
-              child: Text(
-                widget.name,
-                style: const TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  backgroundColor: Colors.red,
+            Row(
+              children: [
+                Container(
+                  color: Colors.red,
+                  child: const SizedBox(
+                    width: 100,
+                    height: 20,
+                  ),
                 ),
-                textAlign: TextAlign.left,
-              ),
+                Container(
+                  color: Colors.amber,
+                  child: Text(
+                    widget.name,
+                    style: const TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              ],
+            ),
+            Container(
+              color: Colors.blueGrey,
+              child: const Text('detail 1'),
             ),
             tableWidget,
           ],
