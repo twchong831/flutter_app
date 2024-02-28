@@ -1,9 +1,14 @@
+import 'dart:math';
+
 import 'package:ditredi/ditredi.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
+import 'package:web_prodution_page/dynamicDitredi/model/gird_3d.dart';
+import 'package:web_prodution_page/dynamicDitredi/model/guid_axis_3d.dart';
 import 'package:web_prodution_page/production_detail.dart';
+import 'package:flutter/material.dart' as colorcode;
 
 class ProductionPage extends StatefulWidget {
   final String name;
@@ -19,6 +24,13 @@ class ProductionPage extends StatefulWidget {
 
 class _ProductionPageState extends State<ProductionPage> {
   late ProductionDetailWidget tableWidget;
+
+  // visualize target using ditredi
+  List<Model3D<Model3D<dynamic>>> visualObjs = [
+    Grid3D(const Point(10, 15), const Point(-10, 0), 1,
+        lineWidth: 1, color: colorcode.Colors.white.withOpacity(0.6)),
+    GuideAxis3D(1, lineWidth: 10),
+  ];
 
   @override
   void initState() {
@@ -97,6 +109,8 @@ class _ProductionPageState extends State<ProductionPage> {
       light: vector.Vector3(-0.5, -0.5, 0.5),
     );
 
+    visualObjs = visualObjs + cubes_.toList();
+
     return Row(
       children: [
         const SizedBox(
@@ -114,7 +128,8 @@ class _ProductionPageState extends State<ProductionPage> {
               child: DiTreDiDraggable(
                 controller: controller_,
                 child: DiTreDi(
-                  figures: cubes_.toList(),
+                  // figures: cubes_.toList(),
+                  figures: visualObjs,
                   controller: controller_,
                 ),
               ),
