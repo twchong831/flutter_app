@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:object_3d/object_3d.dart';
 import 'package:web_prodution_page/prodution_page.dart';
 
 class Home extends StatelessWidget {
@@ -12,18 +11,14 @@ class Home extends StatelessWidget {
         title: const Text("Production Page"),
         backgroundColor: Colors.blue,
       ),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Column(
           children: [
-            Text('chair'),
-            Container(
-              color: Colors.grey,
-              child: SizedBox(
-                height: 500,
-                width: 500,
-                child: ProductionPage(name: 'chair'),
-              ),
+            SizedBox(
+              height: 10,
             ),
+            // Text('chair'),
+            ProductionPage(name: 'LiDAR'),
           ],
         ),
       ),

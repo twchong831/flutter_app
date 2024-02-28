@@ -1,8 +1,8 @@
 import 'package:ditredi/ditredi.dart';
 import 'package:flutter/material.dart';
-import 'package:o3d/o3d.dart';
 import 'package:object_3d/object_3d.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
+import 'package:web_prodution_page/production_detail.dart';
 
 class ProductionPage extends StatefulWidget {
   final String name;
@@ -17,24 +17,42 @@ class ProductionPage extends StatefulWidget {
 }
 
 class _ProductionPageState extends State<ProductionPage> {
-  final _controller = DiTreDiController(
-    rotationX: -20,
-    rotationY: 30,
-    light: vector.Vector3(-0.5, -0.5, 0.5),
-  );
-
-  late final List<Face3D> chairModel;
-
-  late final Iterable<Cube3D> _cubes;
+  late ProductionDetailWidget tableWidget;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    // chairModel = await ObjParser().loadFromResources('model/chair.obj').timeout(const Duration(seconds: 1),);
-    // print('check ${chairModel.length}');
 
-    // _cubes = _generateCubes();
+    tableWidget = ProductionDetailWidget(
+      name: const [
+        'Num. of Channels',
+        'Light Source',
+        'HFoV & Resolution',
+        'VFoV & Resolution',
+        'Scanning Frequency',
+        'Detection Range',
+        'Operating Temperature',
+        'Input Voltage',
+        'Dimension[mm]',
+        'Field of Application'
+      ],
+      value: const [
+        '2 Channels',
+        '905nm Eye-Safety Class 1',
+        '120',
+        '3',
+        '15Hz (Max)',
+        '0.25 ~ 70.0 m (Max)',
+        '-40 ~ 85',
+        '10 ~ 32 V DC',
+        '102 x 65 x 57',
+        'ADAS, Safety, SLAM, Drone, Robot',
+      ],
+      background_: Colors.grey,
+    );
+
+    print('check size ${tableWidget.getWidgetSize()}');
   }
 
   Iterable<Cube3D> _generateCubes() sync* {
@@ -48,6 +66,7 @@ class _ProductionPageState extends State<ProductionPage> {
       Colors.grey.shade800,
       Colors.grey.shade900,
     ];
+
     const count = 8;
     for (var x = count; x > 0; x--) {
       for (var y = count; y > 0; y--) {
@@ -66,32 +85,62 @@ class _ProductionPageState extends State<ProductionPage> {
     }
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Flex(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       direction: Axis.vertical,
-  //       children: [
-  //         Expanded(
-  //           child: DiTreDiDraggable(
-  //             controller: _controller,
-  //             child: DiTreDi(
-  //               figures: _cubes.toList(),
-  //             ),
-  //           ),
-  //         ),
-  //       ]);
-  // }
-
   @override
   Widget build(BuildContext context) {
-    // return O3D(
-    //   src: 'https://modelviewer.dev/shared-assets/models/RobotExpressive.glb',
-    //   controller: O3DController(),
-    // );
-    return Object3D(
-      size: Size(400, 400),
-      path: 'model/chair2.obj',
+    final cubes_ = _generateCubes();
+    final controller_ = DiTreDiController(
+      rotationX: -20,
+      rotationY: 30,
+      light: vector.Vector3(-0.5, -0.5, 0.5),
+    );
+
+    return Row(
+      children: [
+        const SizedBox(
+          width: 10,
+        ),
+        Column(
+          children: [
+            const SizedBox(
+              height: 30,
+            ),
+            Container(
+              color: Colors.grey,
+              child: SizedBox(
+                height: 350,
+                width: 200,
+                child: DiTreDiDraggable(
+                  controller: controller_,
+                  child: DiTreDi(
+                    figures: cubes_.toList(),
+                    controller: controller_,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        Column(
+          children: [
+            SizedBox(
+              // width: tableWidget.getWidgetSize()!.width,
+              child: Text(
+                widget.name,
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  backgroundColor: Colors.red,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
+            tableWidget,
+          ],
+        ),
+      ],
     );
   }
 }

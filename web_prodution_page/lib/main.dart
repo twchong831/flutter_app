@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:object_3d/object_3d.dart';
 import 'package:web_prodution_page/home.dart';
 
 void main() {
