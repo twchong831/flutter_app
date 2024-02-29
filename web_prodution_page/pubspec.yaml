@@ -37,6 +37,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   object_3d: ^0.0.1
   ditredi: ^2.0.2
+  loading_animation_widget:
+  flutter_svg: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:
@@ -64,7 +66,10 @@ assets:
     model/chair.obj
     model/chair2.obj
     model/chair.glb
-
+    model/sensor_ex.obj
+    model/sensor_ex.mtl
+    icon/dimensions.svg
+    icon/fov.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

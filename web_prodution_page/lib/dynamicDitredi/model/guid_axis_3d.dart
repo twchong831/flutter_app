@@ -54,7 +54,7 @@ List<Model3D<Model3D<dynamic>>> _generateFigures(
   return List.generate(3, (index) {
     switch (index) {
       case 0:
-        ed = Vector3(-length, 0, 0);
+        ed = Vector3(length, 0, 0);
         color = colorcode.Colors.red;
         return Line3D(st, ed, color: color, width: thickness);
       case 1:

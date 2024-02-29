@@ -13,23 +13,47 @@ class ProductionDetailWidget extends StatelessWidget {
   }) : background = background_ ?? Colors.white;
 
   List<TableRow> _tableGenerator() {
+    const double fontSize1 = 25;
+    const double fontSize2 = 23;
     List<TableRow> list_ = <TableRow>[];
 
     for (var i = 0; i < name.length; i++) {
       list_.add(TableRow(
         children: [
           Padding(
-            padding: const EdgeInsets.all(5.0),
+            padding: const EdgeInsets.all(3.0),
             child: Text(
-              name[i],
+              '- ${name[i]}',
               style: const TextStyle(
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
+                fontSize: fontSize1,
+              ),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.all(1.0),
+            child: Text(
+              ':',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: fontSize1,
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Text(value[i]),
+            padding: const EdgeInsetsDirectional.only(
+              start: 5,
+              end: 3,
+              top: 3,
+              bottom: 3,
+            ),
+            child: Text(
+              value[i],
+              style: const TextStyle(
+                fontWeight: FontWeight.normal,
+                fontSize: fontSize2,
+              ),
+            ),
           ),
         ],
       ));
@@ -41,11 +65,22 @@ class ProductionDetailWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Table(
-      border: TableBorder.all(),
+      border: const TableBorder(
+        horizontalInside: BorderSide(
+          color: Colors.black87,
+          width: 1,
+        ),
+        bottom: BorderSide(
+          color: Colors.black87,
+          width: 1,
+        ),
+      ),
+      // border: TableBorder.all(),
       children: _tableGenerator(),
       columnWidths: const {
         0: IntrinsicColumnWidth(),
         1: IntrinsicColumnWidth(),
+        2: IntrinsicColumnWidth(),
       },
     );
   }
