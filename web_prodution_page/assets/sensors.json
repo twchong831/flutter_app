@@ -1,0 +1,40 @@
+[
+        {
+                "HFoV": 120,
+                "HResolution": 0.25,
+                "LightSource": 905,
+                "Num_of_chs": 2,
+                "VFoV": 3,
+                "VResolution": 1,
+                "application": "ADAS,Safety,SLAM,Drone",
+                "depth": 65,
+                "detectionRange_Max": 70,
+                "detectionRange_Min": 0.25,
+                "freq": 15,
+                "height": 57,
+                "id": 1,
+                "name": "LiDAR1",
+                "operatingTemp_Max": 85,
+                "operatingTemp_Min": -40,
+                "width": 102
+        },
+        {
+                "HFoV": 270,
+                "HResolution": 0.25,
+                "LightSource": 905,
+                "Num_of_chs": 1,
+                "VFoV": 1,
+                "VResolution": 1,
+                "application": "ADAS,Safety,SLAM,Drone,Robot",
+                "depth": 65,
+                "detectionRange_Max": 50,
+                "detectionRange_Min": 0.25,
+                "freq": 10,
+                "height": 85,
+                "id": 2,
+                "name": "LiDAR2",
+                "operatingTemp_Max": 85,
+                "operatingTemp_Min": -40,
+                "width": 102
+        }
+]

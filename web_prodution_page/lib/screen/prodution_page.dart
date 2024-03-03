@@ -1,28 +1,27 @@
-import 'dart:async';
 import 'dart:html';
 import 'dart:math';
 
-import 'package:ditredi/ditredi.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
+import 'package:web_prodution_page/database/production/production_inform.dart';
 import 'package:web_prodution_page/dynamicDitredi/dynamic_canvas_model_painter.dart';
 import 'package:web_prodution_page/dynamicDitredi/dynamic_ditredi.dart';
 import 'package:web_prodution_page/dynamicDitredi/model/gird_3d.dart';
 import 'package:web_prodution_page/dynamicDitredi/model/guid_axis_3d.dart';
-import 'package:web_prodution_page/production_detail.dart';
 import 'package:flutter/material.dart' as colorcode;
+import 'package:web_prodution_page/widget/production_detail.dart';
 
 class ProductionPage extends StatefulWidget {
-  final String name;
+  // final String name;
   final Mesh3D model;
+  final LiDARInformation inform;
 
   const ProductionPage({
     super.key,
-    required this.name,
+    // required this.name,
     required this.model,
+    required this.inform,
   });
 
   @override
@@ -91,20 +90,20 @@ class _ProductionPageState extends State<ProductionPage> {
         'Detection Range',
         'Operating Temperature',
         'Input Voltage',
-        'Dimension[mm]',
+        'Dimension',
         'Field of Application'
       ],
-      value: const [
-        '2 Channels',
-        '905nm Eye-Safety Class 1',
-        '120',
-        '3',
-        '15Hz (Max)',
-        '0.25 ~ 70.0 m (Max)',
-        '-40 ~ 85',
+      value: [
+        '${widget.inform.numOfChs}',
+        '${widget.inform.lightSource} Eye-Safety Class 1',
+        '${widget.inform.hFoV} º & ${widget.inform.hResolution} º',
+        '${widget.inform.vFoV} º & ${widget.inform.vResolution} º',
+        '${widget.inform.freq}Hz (Max)',
+        '${widget.inform.rangeMin} ~ ${widget.inform.rangeMax} m (Max)',
+        '${widget.inform.tempMin} ~ ${widget.inform.tempMax} ℃',
         '10 ~ 32 V DC',
-        '102 x 65 x 57',
-        'ADAS, Safety, SLAM, Drone, Robot',
+        '${widget.inform.width} x ${widget.inform.height} x ${widget.inform.depth} mm',
+        '${widget.inform.application}',
       ],
       background_: Colors.grey,
     );
@@ -343,7 +342,7 @@ class _ProductionPageState extends State<ProductionPage> {
               // color: Colors.blue,
               width: baseSize.width * 1.5,
               child: Text(
-                widget.name,
+                widget.inform.name ?? 'LiDAR',
                 style: const TextStyle(
                   fontSize: fontsizeName,
                   fontWeight: FontWeight.bold,

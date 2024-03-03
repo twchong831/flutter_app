@@ -40,6 +40,8 @@ dependencies:
   loading_animation_widget:
   flutter_svg: ^2.0.10+1
 
+  vector_math: any
+  collection: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -70,6 +72,8 @@ assets:
     model/sensor_ex.mtl
     icon/dimensions.svg
     icon/fov.png
+    sensors.json
+    sample.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:
