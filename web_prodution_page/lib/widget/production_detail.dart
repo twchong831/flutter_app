@@ -4,17 +4,20 @@ class ProductionDetailWidget extends StatelessWidget {
   List<String> name;
   List<String> value;
   Color? background;
+  double? baseFontSize;
 
   ProductionDetailWidget({
     super.key,
     required this.name,
     required this.value,
     Color? background_,
-  }) : background = background_ ?? Colors.white;
+    double? baseFontSize_,
+  })  : background = background_ ?? Colors.white,
+        baseFontSize = baseFontSize_ ?? 20;
 
   List<TableRow> _tableGenerator() {
-    const double fontSize1 = 25;
-    const double fontSize2 = 23;
+    // const double fontSize1 = 25;
+    // const double fontSize2 = 23;
     List<TableRow> list_ = <TableRow>[];
 
     for (var i = 0; i < name.length; i++) {
@@ -24,19 +27,19 @@ class ProductionDetailWidget extends StatelessWidget {
             padding: const EdgeInsets.all(3.0),
             child: Text(
               '- ${name[i]}',
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: fontSize1,
+                fontSize: baseFontSize,
               ),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.all(1.0),
+          Padding(
+            padding: const EdgeInsets.all(1.0),
             child: Text(
               ':',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: fontSize1,
+                fontSize: baseFontSize,
               ),
             ),
           ),
@@ -49,9 +52,9 @@ class ProductionDetailWidget extends StatelessWidget {
             ),
             child: Text(
               value[i],
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.normal,
-                fontSize: fontSize2,
+                fontSize: (baseFontSize! * 0.8),
               ),
             ),
           ),

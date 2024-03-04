@@ -19,6 +19,8 @@ class LiDARInformation {
   double? rangeMin;
   double? tempMax;
   double? tempMin;
+  double? voltageMax;
+  double? voltageMin;
 
   double? freq;
 
@@ -42,6 +44,8 @@ class LiDARInformation {
     this.width,
     this.id,
     this.freq,
+    this.voltageMax,
+    this.voltageMin,
   });
 
   factory LiDARInformation.fromJson(Map<String, dynamic> json) =>
@@ -63,6 +67,8 @@ class LiDARInformation {
         width: json['width'],
         id: json['id'],
         freq: json['freq'],
+        voltageMax: json['voltage_Max'],
+        voltageMin: json['voltage_Min'],
       );
 }
 

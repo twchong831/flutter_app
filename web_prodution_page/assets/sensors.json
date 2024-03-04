@@ -16,6 +16,8 @@
                 "name": "LiDAR1",
                 "operatingTemp_Max": 85,
                 "operatingTemp_Min": -40,
+                "voltage_Max": 35,
+                "voltage_Min": 10,
                 "width": 102
         },
         {
@@ -35,6 +37,8 @@
                 "name": "LiDAR2",
                 "operatingTemp_Max": 85,
                 "operatingTemp_Min": -40,
+                "voltage_Max": 32,
+                "voltage_Min": 10,
                 "width": 102
         }
 ]

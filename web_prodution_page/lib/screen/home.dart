@@ -64,12 +64,10 @@ class _HomeState extends State<Home> {
     setState(() {
       if (itemDetailList.isNotEmpty && modelSensor.figures.isNotEmpty) {
         // return true;
-        print('check...0');
         checker = true;
         timer_.cancel();
       } else {
         // return false;
-        print('check...x');
         checker = false;
       }
     });
@@ -103,7 +101,10 @@ class _HomeState extends State<Home> {
                           ? Colors.lightBlueAccent[100]!.withAlpha(40)
                           : Colors.grey[100],
                       child: ProductionPage(
-                          model: modelSensor, inform: itemDetailList[i]),
+                        model: modelSensor,
+                        inform: itemDetailList[i],
+                        evens_: checkOddEven(i),
+                      ),
                     ),
                   const SizedBox(
                     height: 10,
